@@ -23,7 +23,7 @@ import { LEVY_METRO } from '../data/facts';
         </div>
       </div>
       <div class="hero__art">
-        <BinDrawing start="open" id="hero-bin" />
+        <BinDrawing start="open" id="hero-bin" hero />
       </div>
     </div>
   </section>
@@ -99,8 +99,20 @@ import { LEVY_METRO } from '../data/facts';
   }
   .hero h1 { font-size: var(--step-5); letter-spacing: -0.045em; line-height: 0.95; }
   .hero__art { padding-top: 1.5rem; }
+  /* Phones: headline, then the bin, then the pitch and buttons — so the product is on the first screen. */
+  @media (max-width: 600px) {
+    .hero { padding-block: 1.5rem 2.5rem; }
+    .hero .wrap { gap: 1.25rem; }
+    .hero__text { display: contents; }
+    .hero h1 { order: 1; margin: 0; font-size: clamp(2.6rem, 11.5vw, 3.4rem); }
+    .hero__art { order: 2; padding-top: 0.25rem; }
+    .hero__side { order: 3; }
+    .hero__side .lede { font-size: 1.0625rem; }
+    .hero__side .btn-row { margin-top: 1.25rem; }
+  }
   .head-row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 2rem; margin-bottom: 2rem; }
   .head-row h2 { margin: 0; }
+  .head-row a { display: inline-block; padding-block: 0.6rem; margin-block: -0.6rem; }
   .levy-card { background: var(--chalk); border-radius: var(--radius-m); padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--rule); }
   .levy-card__k { color: var(--muted); margin: 0; }
   .levy-card__v { font: 800 var(--step-4)/1.05 var(--font-display); color: var(--steel); letter-spacing: -0.03em; margin: 0.35rem 0; }
@@ -109,4 +121,5 @@ import { LEVY_METRO } from '../data/facts';
   .ask { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.5rem 3rem; }
   .ask h2 { font-size: var(--step-2); }
   .ask p { margin: 0; }
+  @media (max-width: 480px) { .ask .btn { width: 100%; min-height: 3.25rem; } }
 </style>

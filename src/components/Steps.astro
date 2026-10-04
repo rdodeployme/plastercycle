@@ -41,7 +41,14 @@ const steps = [
   .steps__item { position: relative; padding-top: 1.25rem; border-top: 2px solid var(--navy); }
   .steps__img { aspect-ratio: 4 / 3; background: var(--paper); border-radius: var(--radius-m); padding: 1rem; margin-bottom: 1.25rem; overflow: hidden; }
   .steps__img img { width: 100%; height: 100%; object-fit: contain; }
-  @media (max-width: 600px) { .steps__img { aspect-ratio: 16 / 9; } }
+  @media (max-width: 600px) {
+    .steps { gap: 1.75rem; }
+    .steps__item { display: grid; grid-template-columns: 2.1rem 1fr; column-gap: 0.75rem; align-items: center; padding-top: 1rem; }
+    .steps__img { grid-column: 1 / -1; aspect-ratio: auto; height: 9.5rem; padding: 0.75rem; margin-bottom: 1rem; }
+    .steps__n { margin: 0; }
+    .steps__item h3 { margin: 0; font-size: 1.15rem; }
+    .steps__item p { grid-column: 1 / -1; margin: 0.6rem 0 0; }
+  }
   .steps__n {
     display: inline-grid; place-items: center; width: 2.1rem; height: 2.1rem; border-radius: 50%;
     background: var(--steel); color: #fff; font: 800 1rem var(--font-display); margin-bottom: 0.75rem;

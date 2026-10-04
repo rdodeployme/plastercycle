@@ -8,7 +8,7 @@ import { LEVY_METRO, LEVY_RURAL } from '../data/facts';
       <label for="c-t">Plasterboard coming through your site each year</label>
       <div class="calc__tonnes">
         <input id="c-t-range" type="range" min="10" max="3000" step="10" value="250" aria-label="Tonnes a year (slider)" />
-        <div class="calc__num"><input id="c-t" type="number" inputmode="numeric" min="0" max="100000" step="1" value="250" /><span>t / yr</span></div>
+        <div class="calc__num"><input id="c-t" type="number" inputmode="numeric" enterkeyhint="done" min="0" max="100000" step="1" value="250" /><span>t / yr</span></div>
       </div>
       <p class="calc__hint">Not sure? Albury and Federation councils estimated about 1,000 t a year of builders’ offcuts alone.<Cite id="albury" /></p>
     </div>
@@ -25,14 +25,15 @@ import { LEVY_METRO, LEVY_RURAL } from '../data/facts';
     <div class="calc__row2">
       <div class="calc__field">
         <label for="c-gate">Landfill gate fee, on top of the levy <span class="calc__opt">(optional)</span></label>
-        <div class="calc__num calc__num--money"><span>$</span><input id="c-gate" type="number" inputmode="decimal" min="0" step="1" placeholder="0" /><span>/ t</span></div>
+        <div class="calc__num calc__num--money"><span>$</span><input id="c-gate" type="number" inputmode="decimal" enterkeyhint="done" min="0" step="1" placeholder="0" /><span>/ t</span></div>
       </div>
       <div class="calc__field">
         <label for="c-bin">Tonnes in a full bin</label>
-        <div class="calc__num"><input id="c-bin" type="number" inputmode="decimal" min="3" max="12" step="0.5" value="7" /><span>t</span></div>
+        <div class="calc__num"><input id="c-bin" type="number" inputmode="decimal" enterkeyhint="done" min="3" max="12" step="0.5" value="7" /><span>t</span></div>
         <p class="calc__hint">Our estimate is 6–8 t.<Cite id="density" label="workings" /></p>
       </div>
     </div>
+    <div class="calc__mini" aria-hidden="true"><span>Landfill costs avoided a year</span><strong data-out="mini">$0</strong></div>
   </form>
 
   <div class="calc__out" aria-live="polite">
@@ -68,6 +69,8 @@ import { LEVY_METRO, LEVY_RURAL } from '../data/facts';
       const levy = tonnes * levyRate, gates = tonnes * g;
       const bins = tonnes / pb;
       out('total').textContent = money(levy + gates);
+      out('mini').textContent = money(levy + gates);
+      tr.style.setProperty('--fill', `${(Math.min(3000, tonnes) - 10) / (3000 - 10) * 100}%`);
       out('levy').textContent = money(levy);
       out('gate').textContent = g ? money(gates) : '—';
       out('perbin').textContent = money(pb * levyRate);
@@ -86,19 +89,38 @@ import { LEVY_METRO, LEVY_RURAL } from '../data/facts';
     tr.addEventListener('input', () => { t.value = tr.value; run(); });
     root.querySelectorAll('input').forEach((i) => i.addEventListener('input', run));
     run();
+    // Hide the running total once the full results panel is on screen.
+    const outPanel = root.querySelector('.calc__out');
+    if (outPanel && 'IntersectionObserver' in window) {
+      new IntersectionObserver(([e]) => root.classList.toggle('is-out-visible', e.isIntersecting), { threshold: 0 }).observe(outPanel);
+    }
   }
 </script>
 
 <style>
-  .calc { display: grid; gap: 0; grid-template-columns: 1fr; background: var(--paper); border-radius: var(--radius-m); overflow: hidden; border: 1px solid var(--rule); }
+  .calc { --pad: clamp(1.25rem, 3.5vw, 2.5rem); display: grid; gap: 0; grid-template-columns: 1fr; background: var(--paper); border-radius: var(--radius-m); overflow: hidden; overflow: clip; border: 1px solid var(--rule); }
   @media (min-width: 960px) { .calc { grid-template-columns: 1.15fr 1fr; } }
-  .calc__in { padding: clamp(1.25rem, 3.5vw, 2.5rem); display: grid; gap: 1.6rem; }
+  .calc__in { padding: var(--pad); display: grid; gap: 1.6rem; }
   .calc__field { border: 0; margin: 0; padding: 0; min-width: 0; }
   .calc label, .calc legend { display: block; font-weight: 600; color: var(--navy); margin-bottom: 0.6rem; padding: 0; }
   .calc__opt { font-weight: 400; color: var(--muted); }
   .calc__tonnes { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center; }
-  @media (max-width: 520px) { .calc__tonnes { grid-template-columns: 1fr; gap: 0.5rem; } .calc__tonnes .calc__num { justify-self: start; } }
-  .calc input[type='range'] { width: 100%; accent-color: var(--steel); min-height: 2.75rem; }
+  @media (max-width: 520px) { .calc__tonnes { grid-template-columns: 1fr; gap: 0.35rem; } .calc__tonnes .calc__num { justify-self: start; } .calc__seg span { padding: 0.75rem; } .calc__big { font-size: 2.6rem; } }
+  /* slider: thick track that fills, large thumb for thumbs */
+  .calc input[type='range'] { -webkit-appearance: none; appearance: none; width: 100%; height: 2.75rem; background: transparent; margin: 0; cursor: pointer; touch-action: pan-y; }
+  .calc input[type='range']::-webkit-slider-runnable-track {
+    height: 8px; border-radius: 4px;
+    background: linear-gradient(var(--steel), var(--steel)) 0 / var(--fill, 8%) 100% no-repeat, var(--rule);
+  }
+  .calc input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 30px; height: 30px; margin-top: -11px; border-radius: 50%;
+    background: #fff; border: 3px solid var(--steel); box-shadow: 0 1px 4px rgba(20, 49, 107, 0.3);
+  }
+  .calc input[type='range']::-moz-range-track { height: 8px; border-radius: 4px; background: var(--rule); }
+  .calc input[type='range']::-moz-range-progress { height: 8px; border-radius: 4px; background: var(--steel); }
+  .calc input[type='range']::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: #fff; border: 3px solid var(--steel); }
+  .calc input[type='range']:focus-visible { outline: none; }
+  .calc input[type='range']:focus-visible::-webkit-slider-thumb { outline: 3px solid var(--green); outline-offset: 2px; }
   .calc__num { display: inline-flex; align-items: center; gap: 0.4rem; border: 2px solid var(--rule-strong); border-radius: var(--radius-s); padding: 0 0.75rem; background: #fff; }
   .calc__num:focus-within { border-color: var(--steel); }
   .calc__num input { border: 0; outline: 0; font: 700 1.15rem var(--font-display); color: var(--navy); width: 5.5rem; min-height: 2.75rem; background: transparent; }
@@ -115,7 +137,22 @@ import { LEVY_METRO, LEVY_RURAL } from '../data/facts';
   .calc__row2 { display: grid; gap: 1.6rem; grid-template-columns: 1fr; }
   @media (min-width: 560px) { .calc__row2 { grid-template-columns: 1fr 1fr; } }
 
-  .calc__out { background: var(--navy); color: #fff; padding: clamp(1.25rem, 3.5vw, 2.5rem); display: flex; flex-direction: column; }
+  /* phones and tablets: the total follows you down the inputs */
+  .calc__mini { display: none; }
+  @media (max-width: 959px) {
+    .calc__mini {
+      display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+      position: sticky; bottom: 0; z-index: 2;
+      margin: 0 calc(-1 * var(--pad)) calc(-1 * var(--pad));
+      padding: 0.8rem var(--pad) max(0.8rem, env(safe-area-inset-bottom));
+      background: var(--navy); color: #c3cfe6; font-size: 0.9rem;
+      box-shadow: 0 -6px 16px rgba(20, 49, 107, 0.18);
+    }
+    .calc__mini strong { font: 800 1.45rem/1 var(--font-display); color: #fff; letter-spacing: -0.02em; }
+    .calc__mini { transition: opacity 0.2s, transform 0.2s; }
+    .calc.is-out-visible .calc__mini { opacity: 0; transform: translateY(100%); pointer-events: none; }
+  }
+  .calc__out { background: var(--navy); color: #fff; padding: var(--pad); display: flex; flex-direction: column; }
   .calc__label { color: #c3cfe6; margin: 0 0 0.25rem; font-weight: 500; }
   .calc__big { font: 800 var(--step-4)/1 var(--font-display); letter-spacing: -0.03em; margin: 0 0 1.5rem; color: #fff; max-width: none; }
   .calc__dl { margin: 0 0 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 1.5rem; }

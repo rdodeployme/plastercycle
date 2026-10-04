@@ -111,6 +111,7 @@ import { href, ENQUIRY_EMAIL } from '../data/site';
   .f input:focus, .f select:focus, .f textarea:focus { outline: none; border-color: var(--steel); box-shadow: 0 0 0 3px rgba(44,102,208,0.2); }
   .f [aria-invalid='true'] { border-color: var(--danger); background: #fdf3f1; }
   .form__err { color: var(--danger); font-weight: 600; }
+  @media (max-width: 600px) { .form button[type='submit'] { width: 100%; min-height: 3.25rem; font-size: 1.0625rem; } .form, .form__done { padding: 1.25rem 1rem; } }
   .form__how { color: var(--muted); font-size: 0.9rem; margin: 0.9rem 0 0; }
   .form__done h2 { font-size: var(--step-2); }
   .book__aside h2 { font-size: var(--step-1); }

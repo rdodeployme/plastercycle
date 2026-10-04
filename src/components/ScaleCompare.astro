@@ -10,12 +10,18 @@ import Cite from './Cite.astro';
 
   <div class="sc__bars" role="img" aria-label="Bar comparison: over 100,000 tonnes of plasterboard landfilled a year is about 1.9 times the 52,800 tonnes of steel in the Sydney Harbour Bridge.">
     <div class="sc__row">
-      <div class="dim sc__dim"><i class="tick tick--l"></i><span>100,000 t a year, plasterboard to landfill</span><i class="tick tick--r"></i></div>
-      <div class="sc__bar sc__bar--board"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <p class="sc__lab" aria-hidden="true"><strong>100,000 t</strong> a year, plasterboard to landfill</p>
+      <div class="sc__fig">
+        <i class="sc__rule" aria-hidden="true"></i>
+        <div class="sc__bar sc__bar--board"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      </div>
     </div>
-    <div class="sc__row" style="--w: 52.8%">
-      <div class="dim sc__dim"><i class="tick tick--l"></i><span>52,800 t, all the steel in the Sydney Harbour Bridge</span><i class="tick tick--r"></i></div>
-      <div class="sc__bar sc__bar--steel"></div>
+    <div class="sc__row">
+      <p class="sc__lab" aria-hidden="true"><strong>52,800 t</strong> all the steel in the Sydney Harbour Bridge</p>
+      <div class="sc__fig" style="--w: 52.8%">
+        <i class="sc__rule" aria-hidden="true"></i>
+        <div class="sc__bar sc__bar--steel"></div>
+      </div>
     </div>
   </div>
   <p class="sc__foot">
@@ -25,27 +31,33 @@ import Cite from './Cite.astro';
 
 <style>
   .sc__num {
-    font: 800 var(--step-5)/0.9 var(--font-display); letter-spacing: -0.05em; color: var(--steel);
+    font: 800 clamp(3.6rem, 1.6rem + 6vw, 6.6rem)/0.9 var(--font-display); letter-spacing: -0.05em; color: var(--steel);
     margin: 0 0 0.25em; max-width: none;
   }
   .sc__plus { font-size: 0.6em; vertical-align: 0.42em; margin-left: 0.04em; }
   .sc__unit { font-size: 0.42em; letter-spacing: 0; margin-left: 0.12em; color: var(--navy); }
   .sc__head { font-size: var(--step-2); max-width: 30ch; }
   .sc__sub { color: var(--muted); }
-  .sc__bars { margin-top: clamp(2rem, 5vw, 3rem); display: grid; gap: 1.75rem; }
-  .sc__row { width: var(--w, 100%); min-width: 15rem; }
-  .sc__dim { margin-bottom: 0.5rem; }
-  .sc__dim span { white-space: normal; text-align: center; color: var(--ink); font-weight: 600; }
+  .sc__bars { margin-top: clamp(2rem, 5vw, 3rem); display: grid; gap: clamp(1.5rem, 4vw, 2.25rem); }
+  .sc__lab { margin: 0 0 0.5rem; color: var(--ink); font-size: 0.95rem; max-width: none; }
+  .sc__lab strong { font-family: var(--font-display); font-weight: 800; color: var(--navy); font-size: 1.15rem; margin-right: 0.2em; }
+  .sc__fig { width: var(--w, 100%); }
+  /* dimension line spanning exactly the bar */
+  .sc__rule {
+    display: block; height: 12px; margin-bottom: 0.35rem;
+    border-inline: 1px solid var(--rule-strong);
+    background: linear-gradient(var(--rule-strong), var(--rule-strong)) center / 100% 1px no-repeat;
+  }
   .sc__bar { height: clamp(84px, 11vw, 132px); border-radius: var(--radius-s); }
   /* the plasterboard bar is drawn as a stack of sheets */
-  .sc__bar--board {
-    display: grid; grid-template-rows: repeat(6, 1fr); gap: 3px;
-  }
+  .sc__bar--board { display: grid; grid-template-rows: repeat(6, 1fr); gap: 3px; }
   .sc__bar--board span { background: var(--steel); border-radius: 2px; }
   .sc__bar--board span:nth-child(even) { background: #3d76dc; }
-  .sc__bar--steel {
-    background: repeating-linear-gradient(135deg, var(--navy) 0 10px, #23447f 10px 20px);
-  }
+  .sc__bar--steel { background: repeating-linear-gradient(135deg, var(--navy) 0 10px, #23447f 10px 20px); }
   .sc__foot { margin-top: 1.5rem; font-weight: 600; color: var(--navy); }
-  @media (max-width: 560px) { .sc__row { width: 100%; } .sc__row[style] .sc__bar { width: 52.8%; } }
+  @media (max-width: 600px) {
+    .sc__head { font-size: 1.5rem; }
+    .sc__bar { height: 72px; }
+    .sc__bar--board { gap: 2px; }
+  }
 </style>

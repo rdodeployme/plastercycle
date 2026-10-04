@@ -26,7 +26,8 @@ const {
   .band h2 { color: #fff; }
   .band p { color: #e3ebfb; font-size: var(--step-1); line-height: 1.5; }
   .band__act { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; }
-  .band__alt { color: #fff; font-weight: 600; }
+  .band__alt { color: #fff; font-weight: 600; display: inline-block; padding-block: 0.6rem; }
+  @media (max-width: 480px) { .band__act { align-items: stretch; } .band__act .btn { width: 100%; min-height: 3.25rem; } .band__alt { text-align: center; } .band p { font-size: 1.0625rem; } }
   .band__alt:hover { color: var(--green); }
   @media (min-width: 880px) { .band__act { align-items: flex-end; } }
 </style>
