@@ -4,13 +4,14 @@ import Calculator from '../components/Calculator.astro';
 import Faq from '../components/Faq.astro';
 import CtaBand from '../components/CtaBand.astro';
 import Cite from '../components/Cite.astro';
+import ResourceStrip from '../components/ResourceStrip.astro';
 import { href } from '../data/site';
 import { LEVY_METRO, LEVY } from '../data/facts';
 const faq = [
   { q: 'Does the levy really apply to plasterboard?', a: '<p>Yes. Plasterboard sent to landfill is charged the waste levy by the tonne like any other waste. When a transfer station sends it on, it’s classed as industrial waste.</p>' },
   { q: 'Where do the levy figures come from?', a: `<p>EPA Victoria sets the levy in fee units: 10.26 a tonne for metropolitan landfills and 9.03 for rural industrial waste in 2026–27. A fee unit is $${LEVY.feeUnit2026} this year. <a href="${href('/facts/#levy')}">Sources</a>.</p>` },
   { q: 'We’re not in Victoria. Does this still work?', a: '<p>Every state charges for landfill, just at different rates. Put your own gate fee and levy into the “gate fee” box and set the tonnes — the maths is the same. Then tell us where you are.</p>' },
-  { q: 'What do residents need to do?', a: '<p>Bring plasterboard separately from the rest of their load, and keep fibro out. Clear signage at the bin and a quick look at each load at the gate do most of the work.</p>' },
+  { q: 'What do residents need to do?', a: `<p>Bring plasterboard separately from the rest of their load, and keep fibro out. The printable <a href="${href('/resources/')}">bin sign and gate staff guide</a> do most of the work.</p>` },
   { q: 'Can we run a trial first?', a: `<p>Ask us. <a href="${href('/book/')}">Tell us about your site</a> and how much board you see, and we’ll work out a sensible starting point.</p>` },
 ];
 ---
@@ -19,7 +20,7 @@ const faq = [
     <div class="wrap">
       <p class="crumb"><a href={href('/')}>Home</a> / Councils and transfer stations</p>
       <h1>Plasterboard is costing you by the tonne.</h1>
-      <p>In metropolitan Victoria, every tonne that goes to landfill attracts ${LEVY_METRO.toFixed(2)} in state levy in 2026–27, before the gate fee.<Cite id="levy" /> Give it its own bin and it leaves your site as a recyclable instead.</p>
+      <p>In metropolitan Victoria, every tonne that goes to landfill attracts ${LEVY_METRO.toFixed(2)} in state levy in 2026–27, before the gate fee — and every other state charges its own.<Cite id="levy-states" /> Give plasterboard its own bin and it leaves your site as a recyclable instead.</p>
     </div>
   </section>
 
@@ -50,6 +51,14 @@ const faq = [
         <h2 class="faq-h">Questions</h2>
         <Faq items={faq} />
       </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <h2>Set it up in an afternoon</h2>
+      <p>Print the bin sign and the one-page gate guide. Put the sign on the bin, the guide in the gatehouse, and the bin where loads can reach it.</p>
+      <ResourceStrip only={['bin-sign', 'gate-guide', 'for-councils']} />
     </div>
   </section>
 

@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import JourneyStory from '../components/JourneyStory.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { href } from '../data/site';
+---
+<Base title="The journey of a sheet" description="Follow a sheet of plasterboard from an offcut on the floor, into the Plastercycle bin, onto the truck, through the plant and back out as gypsum.">
+  <section class="page-head">
+    <div class="wrap">
+      <p class="crumb"><a href={href('/')}>Home</a> / The journey</p>
+      <h1>From an offcut on the floor to gypsum in a bag.</h1>
+      <p>Six steps. The same mineral at the start and the end. Scroll through.</p>
+    </div>
+  </section>
+  <section class="section" style="padding-top:0">
+    <div class="wrap"><JourneyStory /></div>
+  </section>
+  <CtaBand title="Start the loop on your site." body="Tell us where the bin would go and roughly how much board you see, and we’ll come back with a plan and a quote." />
+</Base>

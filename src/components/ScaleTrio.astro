@@ -1,0 +1,124 @@
+---
+/**
+ * Three ways to feel 100,000 tonnes: against the Harbour Bridge, as a line of bins, and piled on the MCG.
+ * All derived figures are registered in facts.ts.
+ */
+import Cite from './Cite.astro';
+---
+<div class="trio" data-trio>
+  <div class="trio__head">
+    <p class="trio__num" aria-hidden="true">100,000<span class="trio__plus">+</span><span class="trio__unit">t</span></p>
+    <h2 class="trio__h"><span class="visually-hidden">More than 100,000 tonnes. </span>That’s how much plasterboard Australia’s builders send to landfill every year.<Cite id="landfilled" /></h2>
+    <p class="trio__sub">Offcuts from new construction alone. Board pulled out in renovations and demolition comes on top of that.</p>
+  </div>
+
+  <div class="trio__tabs" role="tablist" aria-label="Three ways to picture it">
+    <button role="tab" type="button" id="trio-tab-bridge" aria-controls="trio-bridge" aria-selected="true" tabindex="0">Against the Harbour Bridge</button>
+    <button role="tab" type="button" id="trio-tab-line" aria-controls="trio-line" aria-selected="false" tabindex="-1">As a line of bins</button>
+    <button role="tab" type="button" id="trio-tab-mcg" aria-controls="trio-mcg" aria-selected="false" tabindex="-1">Piled on the MCG</button>
+  </div>
+
+  <div class="trio__panel" role="tabpanel" id="trio-bridge" aria-labelledby="trio-tab-bridge">
+    <div class="trio__bars" role="img" aria-label="Bar comparison: over 100,000 tonnes of plasterboard landfilled a year is about 1.9 times the 52,800 tonnes of steel in the Sydney Harbour Bridge.">
+      <div class="trio__row">
+        <p class="trio__lab" aria-hidden="true"><strong>100,000 t</strong> a year, plasterboard to landfill</p>
+        <div class="trio__fig"><i class="trio__rule"></i><div class="trio__bar trio__bar--board"><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
+      </div>
+      <div class="trio__row">
+        <p class="trio__lab" aria-hidden="true"><strong>52,800 t</strong> all the steel in the Sydney Harbour Bridge</p>
+        <div class="trio__fig" style="--w: 52.8%"><i class="trio__rule"></i><div class="trio__bar trio__bar--steel"></div></div>
+      </div>
+    </div>
+    <p class="trio__foot">Nearly two Harbour Bridges’ worth of steel, in weight, buried every year.<Cite id="harbour-bridge" /></p>
+  </div>
+
+  <div class="trio__panel" role="tabpanel" id="trio-line" aria-labelledby="trio-tab-line" hidden>
+    <svg class="trio__svg" viewBox="0 0 1000 300" role="img" aria-label="A line of about 14,300 bins, 90 km long, drawn against the 70 km from Melbourne to Geelong.">
+      <defs><pattern id="binsPat" width="12" height="20" patternUnits="userSpaceOnUse"><rect x="0" y="4" width="10.5" height="12" rx="1" fill="#2c66d0"/><rect x="5" y="5" width="1" height="10" fill="rgba(255,255,255,0.45)"/></pattern></defs>
+      <text x="0" y="36" class="trio__t trio__t--b">14,300 bins, end to end</text>
+      <text x="1000" y="36" text-anchor="end" class="trio__t trio__t--m">90 km</text>
+      <rect x="0" y="56" width="1000" height="20" fill="url(#binsPat)"/>
+      <line x1="0" y1="96" x2="1000" y2="96" class="trio__dim"/><line x1="0" y1="90" x2="0" y2="102" class="trio__dim"/><line x1="1000" y1="90" x2="1000" y2="102" class="trio__dim"/>
+      <text x="0" y="160" class="trio__t trio__t--b">Melbourne to Geelong, by road</text>
+      <text x="777" y="160" text-anchor="end" class="trio__t trio__t--m">70 km</text>
+      <line x1="0" y1="190" x2="777" y2="190" stroke="#14316b" stroke-width="10" stroke-linecap="round"/>
+      <circle cx="0" cy="190" r="11" fill="#14316b"/><circle cx="777" cy="190" r="11" fill="#14316b"/>
+      <text x="0" y="232" class="trio__t trio__t--s">Melbourne</text>
+      <text x="777" y="232" text-anchor="end" class="trio__t trio__t--s">Geelong</text>
+      <line x1="0" y1="256" x2="777" y2="256" class="trio__dim"/><line x1="0" y1="250" x2="0" y2="262" class="trio__dim"/><line x1="777" y1="250" x2="777" y2="262" class="trio__dim"/>
+    </svg>
+    <p class="trio__foot">A year’s plasterboard would fill about 14,300 bins — parked nose to tail, a 90 km line that runs past Geelong and keeps going.<Cite id="line-of-bins" /></p>
+  </div>
+
+  <div class="trio__panel" role="tabpanel" id="trio-mcg" aria-labelledby="trio-tab-mcg" hidden>
+    <svg class="trio__svg" viewBox="0 0 1000 320" role="img" aria-label="A cross-section of the MCG oval, 174 metres across, with a 7 metre deep layer of plasterboard drawn to scale next to a person.">
+      <text x="0" y="30" class="trio__t trio__t--b">The MCG playing field, 174 × 149 m — cross-section</text>
+      <!-- the oval seen side-on: the stacked board, drawn to scale (1 m = 4.6 px) -->
+      <rect x="100" y="238" width="800" height="32" fill="#2c66d0"/>
+      <rect x="100" y="238" width="800" height="32" fill="url(#sheetsPat)"/>
+      <defs><pattern id="sheetsPat" width="800" height="4" patternUnits="userSpaceOnUse"><rect x="0" y="3" width="800" height="1" fill="rgba(255,255,255,0.35)"/></pattern></defs>
+      <path d="M60 270 Q500 300 940 270" fill="none" stroke="#7ab648" stroke-width="6" stroke-linecap="round"/>
+      <line x1="930" y1="238" x2="930" y2="270" class="trio__dim"/><line x1="924" y1="238" x2="936" y2="238" class="trio__dim"/><line x1="924" y1="270" x2="936" y2="270" class="trio__dim"/>
+      <text x="944" y="258" class="trio__t trio__t--s">7 m deep</text>
+      <!-- a person, 1.75 m, to scale -->
+      <g transform="translate(76,262)"><circle cx="0" cy="-7" r="1.6" fill="#1b2333"/><rect x="-1.1" y="-5.4" width="2.2" height="5.4" rx="0.8" fill="#1b2333"/></g>
+      <line x1="76" y1="262" x2="76" y2="255" class="trio__dim" opacity="0"/>
+      <text x="40" y="226" class="trio__t trio__t--s">a person</text>
+      <line x1="100" y1="290" x2="900" y2="290" class="trio__dim"/><line x1="100" y1="284" x2="100" y2="296" class="trio__dim"/><line x1="900" y1="284" x2="900" y2="296" class="trio__dim"/>
+      <text x="500" y="312" text-anchor="middle" class="trio__t trio__t--s">174 m</text>
+      <text x="100" y="200" class="trio__t trio__t--m">143,000 m³ of sheets</text>
+    </svg>
+    <p class="trio__foot">Stacked as sheets, a year’s landfilled plasterboard would bury the whole MCG field about seven metres deep — four people standing on each other’s shoulders.<Cite id="mcg" /></p>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-trio]').forEach((root) => {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const select = (t: HTMLButtonElement) => tabs.forEach((x) => {
+      const on = x === t; x.setAttribute('aria-selected', String(on)); x.tabIndex = on ? 0 : -1;
+      const p = document.getElementById(x.getAttribute('aria-controls')!); if (p) p.hidden = !on;
+    });
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(t));
+      t.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return; e.preventDefault();
+        const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length]; select(n); n.focus();
+      });
+    });
+  });
+</script>
+
+<style>
+  .trio__num { font: 800 clamp(3.6rem, 1.6rem + 6vw, 6.6rem)/0.9 var(--font-display); letter-spacing: -0.05em; color: var(--steel); margin: 0 0 0.25em; max-width: none; }
+  .trio__plus { font-size: 0.6em; vertical-align: 0.42em; margin-left: 0.04em; }
+  .trio__unit { font-size: 0.42em; letter-spacing: 0; margin-left: 0.12em; color: var(--navy); }
+  .trio__h { font-size: var(--step-2); max-width: 30ch; }
+  .trio__sub { color: var(--muted); }
+  .trio__tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: clamp(1.5rem, 4vw, 2.5rem) 0 1.5rem; }
+  .trio__tabs button { font: 600 0.92rem var(--font-body); color: var(--navy); background: var(--chalk); border: 2px solid transparent; border-radius: 999px; padding: 0.55rem 1rem; min-height: 2.75rem; cursor: pointer; touch-action: manipulation; }
+  .trio__tabs button:hover { border-color: var(--rule-strong); }
+  .trio__tabs button[aria-selected='true'] { background: var(--navy); color: #fff; }
+  .trio__bars { display: grid; gap: clamp(1.5rem, 4vw, 2.25rem); }
+  .trio__lab { margin: 0 0 0.5rem; color: var(--ink); font-size: 0.95rem; max-width: none; }
+  .trio__lab strong { font-family: var(--font-display); font-weight: 800; color: var(--navy); font-size: 1.15rem; margin-right: 0.2em; }
+  .trio__fig { width: var(--w, 100%); }
+  .trio__rule { display: block; height: 12px; margin-bottom: 0.35rem; border-inline: 1px solid var(--rule-strong); background: linear-gradient(var(--rule-strong), var(--rule-strong)) center / 100% 1px no-repeat; }
+  .trio__bar { height: clamp(84px, 11vw, 132px); border-radius: var(--radius-s); }
+  .trio__bar--board { display: grid; grid-template-rows: repeat(6, 1fr); gap: 3px; }
+  .trio__bar--board span { background: var(--steel); border-radius: 2px; }
+  .trio__bar--board span:nth-child(even) { background: #3d76dc; }
+  .trio__bar--steel { background: repeating-linear-gradient(135deg, var(--navy) 0 10px, #23447f 10px 20px); }
+  .trio__foot { margin-top: 1.5rem; font-weight: 600; color: var(--navy); max-width: 46rem; }
+  .trio__svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .trio__t { font-family: var(--font-body); fill: var(--ink); font-size: 22px; }
+  .trio__t--b { font-weight: 600; }
+  .trio__t--m { font-family: var(--font-display); font-weight: 800; fill: var(--navy); font-size: 28px; }
+  .trio__t--s { font-size: 18px; fill: var(--muted); }
+  .trio__dim { stroke: var(--rule-strong); stroke-width: 1.5; }
+  @media (max-width: 600px) {
+    .trio__h { font-size: 1.5rem; }
+    .trio__bar { height: 72px; }
+    .trio__t { font-size: 30px; } .trio__t--m { font-size: 36px; } .trio__t--s { font-size: 26px; }
+  }
+</style>

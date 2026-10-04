@@ -1,0 +1,67 @@
+---
+import Base from '../layouts/Base.astro';
+import ResourceStrip from '../components/ResourceStrip.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { href, ENQUIRY_EMAIL } from '../data/site';
+const wmp = `Plasterboard: all plasterboard offcuts and waste board will be kept separate from other waste in a dedicated enclosed Plastercycle bin on site and collected for recycling into gypsum. No plasterboard will be disposed of to landfill. Contact: Plastercycle, ${ENQUIRY_EMAIL}, plastercycle.com.`;
+---
+<Base title="Resources" description="Printable bin signs, a gate staff guide, a site flyer, a council leave-behind, waste management plan wording and the Plastercycle logo pack.">
+  <section class="page-head">
+    <div class="wrap">
+      <p class="crumb"><a href={href('/')}>Home</a> / Resources</p>
+      <h1>Print it, stick it on, hand it over.</h1>
+      <p>Everything a site or a transfer station needs to run the bin well, ready to print. Free to use.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <h2>Printables</h2>
+      <ResourceStrip />
+    </div>
+  </section>
+
+  <section class="section section--paper" id="wmp">
+    <div class="wrap grid-2">
+      <div>
+        <h2>Waste management plan wording</h2>
+        <p>Councils that require a waste management plan for a build ask where each material is going. Paste this into the plasterboard line.</p>
+        <button type="button" class="btn btn--ghost" data-copy-wmp>Copy the wording</button>
+        <span class="copied" data-copied hidden>Copied</span>
+      </div>
+      <blockquote class="wmp" id="wmp-text">{wmp}</blockquote>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap grid-2">
+      <div>
+        <h2>Logo and brand</h2>
+        <p>The Plastercycle logo as true vector files, in colour and reversed out of blue, plus the colours. For signwriters, printers and anyone putting the bin in a document.</p>
+        <a class="btn btn--primary" href={href('/brand/')}>Open the brand page</a>
+      </div>
+      <div class="logos">
+        <img src={href('/brand/plastercycle-logo-horizontal.svg')} alt="Plastercycle logo, colour" />
+        <img src={href('/brand/plastercycle-logo-horizontal-reverse.svg')} alt="Plastercycle logo, reversed out of blue" class="logos__rev" />
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<script>
+  const b = document.querySelector<HTMLButtonElement>('[data-copy-wmp]');
+  b?.addEventListener('click', async () => {
+    const t = document.getElementById('wmp-text')?.textContent?.trim() || '';
+    try { await navigator.clipboard.writeText(t); const c = document.querySelector<HTMLElement>('[data-copied]'); if (c) { c.hidden = false; setTimeout(() => { c.hidden = true; }, 2000); } } catch { prompt('Copy this wording', t); }
+  });
+</script>
+
+<style>
+  .wmp { margin: 0; background: var(--paper); border-left: 4px solid var(--steel); border-radius: 0 var(--radius-s) var(--radius-s) 0; padding: 1.25rem 1.5rem; font-size: 1rem; color: var(--ink); }
+  .copied { margin-left: 0.75rem; color: var(--green-ink); font-weight: 600; }
+  .logos { display: grid; gap: 1rem; }
+  .logos img { background: var(--paper); border-radius: var(--radius-m); padding: 1.5rem 2rem; width: 100%; }
+  .logos__rev { background: var(--steel) !important; }
+</style>

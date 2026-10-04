@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Composition from '../components/Composition.astro';
 import CtaBand from '../components/CtaBand.astro';
+import GypsumCycle from '../components/GypsumCycle.astro';
 import Cite from '../components/Cite.astro';
 import { href } from '../data/site';
 const uses = [
@@ -24,6 +25,17 @@ const uses = [
   </section>
 
   <section class="section section--paper">
+    <div class="wrap grid-2">
+      <div>
+        <h2>The loop</h2>
+        <p>Gypsum is calcium sulphate dihydrate. Heat it and most of the water leaves — that’s plaster. Add water and it sets hard again. The reaction runs both ways, which is why recovered gypsum can go round the loop over and over.</p>
+        <p><a href={href('/the-journey/')}>Follow a sheet through all six steps</a></p>
+      </div>
+      <GypsumCycle />
+    </div>
+  </section>
+
+  <section class="section">
     <div class="wrap">
       <h2>Three places the gypsum goes</h2>
       <div class="uses">
@@ -38,7 +50,7 @@ const uses = [
     </div>
   </section>
 
-  <section class="section">
+  <section class="section section--paper">
     <div class="wrap grid-2">
       <div>
         <h2>Why not just landfill it?</h2>

@@ -1,0 +1,79 @@
+---
+import Base from '../layouts/Base.astro';
+import { href } from '../data/site';
+const files = [
+  { f: 'plastercycle-logo-horizontal', t: 'Horizontal lockup, colour', bg: 'light' },
+  { f: 'plastercycle-logo-horizontal-reverse', t: 'Horizontal lockup, reversed', bg: 'blue' },
+  { f: 'plastercycle-logo-stacked', t: 'Stacked lockup, colour', bg: 'light' },
+  { f: 'plastercycle-logo-stacked-reverse', t: 'Stacked lockup, reversed', bg: 'blue' },
+  { f: 'plastercycle-wordmark', t: 'Wordmark only', bg: 'light' },
+  { f: 'plastercycle-icon', t: 'Icon, colour', bg: 'light' },
+  { f: 'plastercycle-icon-reverse', t: 'Icon, reversed', bg: 'blue' },
+];
+const colours = [
+  { n: 'Bin blue', hex: '#2C66D0', use: 'the bin, buttons, highlights' },
+  { n: 'Navy', hex: '#1B4495', use: '“Plaster” in the wordmark, headings' },
+  { n: 'Green', hex: '#5F9E33', use: '“cycle” in the wordmark' },
+  { n: 'Icon green', hex: '#78AC43', use: 'the arrows in the icon' },
+  { n: 'Lime', hex: '#8CC54E', use: 'green on blue backgrounds' },
+  { n: 'Chalk', hex: '#F2F4F3', use: 'page background' },
+];
+---
+<Base title="Brand and logo" description="The Plastercycle logo files, colours and how to use them on the bin, in print and on screen.">
+  <section class="page-head">
+    <div class="wrap">
+      <p class="crumb"><a href={href('/')}>Home</a> / Brand and logo</p>
+      <h1>The logo, the colours, the rules.</h1>
+      <p>True vector files for signwriters and printers, PNGs for everything else. Use them as they are — don’t redraw, stretch or recolour.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <h2>Logo files</h2>
+      <ul class="lf">
+        {files.map((x) => (
+          <li class:list={['lf__item', { 'lf__item--blue': x.bg === 'blue' }]}>
+            <img src={href(`/brand/${x.f}.svg`)} alt={x.t} loading="lazy" />
+            <div class="lf__meta">
+              <strong>{x.t}</strong>
+              <span><a href={href(`/brand/${x.f}.svg`)} download>SVG</a> · <a href={href(`/brand/${x.f}.png`)} download>PNG</a></span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="wrap grid-2">
+      <div>
+        <h2>Colours</h2>
+        <ul class="sw">
+          {colours.map((c) => <li><span class="sw__chip" style={`background:${c.hex}`}></span><strong>{c.n}</strong><code>{c.hex}</code><span class="sw__use">{c.use}</span></li>)}
+        </ul>
+      </div>
+      <div>
+        <h2>Type</h2>
+        <p><strong>Montserrat ExtraBold</strong> for the wordmark and headings; <strong>Montserrat Bold</strong>, tracked wide, for “PLASTERBOARD RECYCLING”. Body text is IBM Plex Sans.</p>
+        <h2>On the bin</h2>
+        <p>The reversed horizontal lockup goes on the upper side panel nearest the hook end, white and lime on the bin blue, with “RECOVER · RECYCLE · REBUILD” on the next panel. See it on the <a href={href('/the-bin/')}>3D bin</a>.</p>
+        <h2>Clear space and minimum size</h2>
+        <p>Keep clear space around the lockup equal to the height of the icon’s stacked boards. Don’t set the horizontal lockup narrower than 40 mm in print or 160 px on screen; below that, use the icon alone.</p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .lf { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
+  .lf__item { background: var(--paper); border-radius: var(--radius-m); border: 1px solid var(--rule); overflow: hidden; display: grid; grid-template-rows: 10rem auto; }
+  .lf__item img { width: 100%; height: 100%; object-fit: contain; padding: 1.5rem; background: #fff; }
+  .lf__item--blue img { background: var(--steel); }
+  .lf__meta { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.8rem 1rem; font-size: 0.92rem; }
+  .lf__meta strong { color: var(--navy); }
+  .sw { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+  .sw li { display: grid; grid-template-columns: 2.5rem 1fr auto; grid-template-areas: 'chip name hex' 'chip use use'; column-gap: 0.9rem; align-items: center; background: var(--chalk); border-radius: var(--radius-s); padding: 0.6rem 0.8rem; }
+  .sw__chip { grid-area: chip; width: 2.5rem; height: 2.5rem; border-radius: 6px; border: 1px solid var(--rule); }
+  .sw strong { grid-area: name; color: var(--navy); } .sw code { grid-area: hex; font-size: 0.85rem; color: var(--muted); } .sw__use { grid-area: use; font-size: 0.85rem; color: var(--muted); }
+</style>

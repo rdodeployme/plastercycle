@@ -2,6 +2,8 @@
 import Base from '../layouts/Base.astro';
 import AcceptLists from '../components/AcceptLists.astro';
 import CtaBand from '../components/CtaBand.astro';
+import IdGuide from '../components/IdGuide.astro';
+import ResourceStrip from '../components/ResourceStrip.astro';
 import Cite from '../components/Cite.astro';
 import { href } from '../data/site';
 ---
@@ -21,27 +23,10 @@ import { href } from '../data/site';
   </section>
 
   <section class="section section--paper">
-    <div class="wrap grid-2">
-      <div>
-        <h2>Plasterboard or fibro?</h2>
-        <p>They can look alike in a trailer load, and the difference matters. Fibro sheeting made before 1987 contained around 15% asbestos.<Cite id="fibro" /> One sheet of it contaminates the whole bin.</p>
-        <p>If you’re not sure what a sheet is, it doesn’t go in. Treat it as possible asbestos and handle it the way your site or council requires.</p>
-      </div>
-      <div class="tells">
-        <h3>Usually plasterboard</h3>
-        <ul>
-          <li>Paper face on both sides</li>
-          <li>Chalky white or grey core showing at cut or broken edges</li>
-          <li>Often a maker’s name printed on the back</li>
-        </ul>
-        <h3>Treat as possible fibro</h3>
-        <ul>
-          <li>Hard, cement-like sheet with no paper face</li>
-          <li>Dimpled or textured back</li>
-          <li>From eaves, wet areas, sheds or outside walls of an older building</li>
-        </ul>
-        <div class="note note--warn"><p>Don’t cut, snap or sand a sheet to check. If it is fibro, that releases fibres. Only a lab test confirms asbestos.</p></div>
-      </div>
+    <div class="wrap">
+      <h2>Plasterboard or fibro?</h2>
+      <p>They can look alike in a trailer load, and the difference matters. One sheet of fibro contaminates the whole bin.</p>
+      <IdGuide />
     </div>
   </section>
 
@@ -53,6 +38,13 @@ import { href } from '../data/site';
         <li><strong>Fill from the back.</strong> Use the panel nearest the rear door first.</li>
         <li><strong>Shut the panels.</strong> Close up at the end of the day so rain stays out.</li>
       </ul>
+    </div>
+  </section>
+
+  <section class="section section--paper section--tight">
+    <div class="wrap">
+      <h2>Put it on the bin</h2>
+      <ResourceStrip only={['bin-sign', 'gate-guide']} />
     </div>
   </section>
 

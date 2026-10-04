@@ -2,31 +2,43 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { SITE, href } from '../data/site';
-interface Props { title?: string; description?: string; }
-const { title, description = SITE.description } = Astro.props;
+import { SITE, href, ENQUIRY_EMAIL } from '../data/site';
+interface Props { title?: string; description?: string; og?: string; ld?: Record<string, unknown> | Record<string, unknown>[] }
+const { title, description = SITE.description, og, ld } = Astro.props;
 const fullTitle = title ? `${title} | ${SITE.name}` : `${SITE.name} — ${SITE.tagline}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const og = new URL(href('/og.png'), Astro.site);
+// share image: per-page when one exists, else the site one
+const slug = Astro.url.pathname.replace(import.meta.env.BASE_URL, '/').replace(/^\/|\/$/g, '').split('/')[0];
+const ogFile = og ?? (slug ? `/og-${slug}.png` : '/og.png');
+const ogUrl = new URL(href(ogFile), Astro.site);
+const base = [
+  { '@context': 'https://schema.org', '@type': 'Organization', name: SITE.name, url: Astro.site?.toString(), logo: new URL(href('/brand/plastercycle-logo-horizontal.png'), Astro.site).toString(), email: ENQUIRY_EMAIL, description: SITE.description },
+  { '@context': 'https://schema.org', '@type': 'Service', name: 'Plasterboard recycling bin', provider: { '@type': 'Organization', name: SITE.name }, serviceType: 'Plasterboard recycling collection', areaServed: 'Australia', description: SITE.description },
+];
+const ldAll = ld ? base.concat(Array.isArray(ld) ? ld : [ld]) : base;
 ---
 <!doctype html>
 <html lang="en-AU">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href={href('/favicon.svg')} type="image/svg+xml" />
     <link rel="apple-touch-icon" href={href('/apple-touch-icon.png')} />
+    <link rel="sitemap" href={href('/sitemap-index.xml')} />
     <meta name="theme-color" content="#2c66d0" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={SITE.name} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={og} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(ldAll)} />
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>

@@ -1,0 +1,82 @@
+---
+import Base from '../layouts/Base.astro';
+import Calculator from '../components/Calculator.astro';
+import AcceptLists from '../components/AcceptLists.astro';
+import ResourceStrip from '../components/ResourceStrip.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Cite from '../components/Cite.astro';
+import { href, BIN } from '../data/site';
+const faq = [
+  { q: 'How much room does it take on site?', a: `<p>The bin is ${(BIN.length / 1000).toFixed(1)} m long and ${(BIN.width / 1000).toFixed(2)} m wide, and a hook-lift truck needs a straight run up to the hook end to drop and pick it up. If you’ve had a hook bin on the job before, it’s the same deal.</p>` },
+  { q: 'Can it go behind the hoarding?', a: '<p>If a hook-lift truck can get to it, yes. Tell us about access and we’ll work out the spot with you.</p>' },
+  { q: 'Can my plasterers break sheets into it?', a: '<p>Yes — the loading opening starts about a metre off the ground, so offcuts go straight in without climbing. Broken board packs tighter, so each load holds more.</p>' },
+  { q: 'What if someone puts rubbish in it?', a: '<p>Then it isn’t recyclable any more. Keep the panels shut when it isn’t being loaded, put the sign on it, and make it the only bin anyone is allowed to put board in. One material, one bin.</p>' },
+  { q: 'Does it count in my waste management plan?', a: `<p>Councils that require a waste management plan ask where each material will go. Plasterboard with its own recycling destination is exactly what they want to see — use the wording on the <a href="${href('/resources/#wmp')}">resources page</a>.</p>` },
+];
+---
+<Base title="For builders and sites" description="Offcuts into the blue bin as you go. Work out the tonnes from the board on your job, and what you save on levy by keeping plasterboard out of the skip.">
+  <section class="page-head">
+    <div class="wrap">
+      <p class="crumb"><a href={href('/')}>Home</a> / Builders and sites</p>
+      <h1>The offcuts were always going somewhere. Make it here.</h1>
+      <p>Between 5 and 20% of the plasterboard ordered for a job ends up as offcuts.<Cite id="waste-factor" /> In a mixed skip that’s weight you pay to bury. In the blue bin it’s recycled into gypsum.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <Calculator mode="builder" />
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="wrap grid-2">
+      <div>
+        <h2>On site, it works like this</h2>
+        <ol class="site-steps">
+          <li><strong>We drop the bin</strong> where the plasterers are working, before the first sheets go up.</li>
+          <li><strong>Offcuts go straight in</strong> through the side panel — no carrying to a skip at the gate.</li>
+          <li><strong>Panels shut at knock-off.</strong> Rain stays out, so does everyone else’s rubbish.</li>
+          <li><strong>Full? We swap it.</strong> You tell us, we book the truck and bring an empty one.</li>
+        </ol>
+        <p>The plasterboard doesn’t go into your general skip, which is lighter and cheaper to tip, and you have a recycling destination to write into the waste plan.</p>
+      </div>
+      <div>
+        <img src={href('/images/3d/side-open.webp')} width="2128" height="757" alt="The Plastercycle bin with both side panels lifted" loading="lazy" class="builders__img" />
+        <h3>What goes in</h3>
+        <p>Offcuts, part sheets, damaged and surplus sheets, cornice. Pull the screws and keep the timber and insulation out. <a href={href('/what-goes-in/')}>The full list</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2>What goes in, what stays out</h2>
+      <AcceptLists />
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="wrap grid-2">
+      <div>
+        <h2>For the lunchroom wall</h2>
+        <p>Print the site flyer and the bin sign. Everyone on the job sees what the blue bin is for.</p>
+        <ResourceStrip only={['site-flyer', 'bin-sign']} />
+      </div>
+      <div>
+        <h2>Questions</h2>
+        <Faq items={faq} />
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="Get a bin on the job before the first sheet goes up." body="Tell us the site, the start date and roughly how much board is going in. We’ll come back with a plan and a quote." />
+</Base>
+
+<style>
+  .site-steps { padding-left: 1.25rem; margin: 0 0 1.5rem; }
+  .site-steps li { margin-bottom: 0.75rem; }
+  .site-steps strong { color: var(--navy); }
+  .builders__img { background: var(--chalk); border-radius: var(--radius-m); padding: 1rem; margin-bottom: 1.25rem; }
+</style>

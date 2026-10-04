@@ -1,0 +1,45 @@
+---
+/** Victoria's metropolitan landfill levy over time — sourced points only, gaps left as gaps. */
+import { VIC_HISTORY } from '../data/levies';
+import Cite from './Cite.astro';
+const W = 1000, H = 420, padL = 70, padR = 30, padT = 30, padB = 60;
+const years = VIC_HISTORY.map((d) => Number(d.year.slice(0, 4)));
+const minY = 1992, maxY = 2026, maxRate = 200;
+const x = (y: number) => padL + ((y - minY) / (maxY - minY)) * (W - padL - padR);
+const y = (r: number) => padT + (1 - r / maxRate) * (H - padT - padB);
+const pts = VIC_HISTORY.map((d, i) => ({ ...d, cx: x(years[i]), cy: y(d.rate), yr: years[i] }));
+const ticks = [0, 50, 100, 150, 200];
+const xTicks = [1992, 2000, 2010, 2020, 2026];
+---
+<figure class="lc">
+  <svg viewBox={`0 0 ${W} ${H}`} class="lc__svg" role="img" aria-label={`Victoria's metropolitan landfill levy per tonne: ${VIC_HISTORY.map((d) => `${d.year} $${d.rate}`).join(', ')}.`}>
+    {ticks.map((t) => <g><line x1={padL} x2={W - padR} y1={y(t)} y2={y(t)} class="lc__grid" /><text x={padL - 10} y={y(t) + 5} text-anchor="end" class="lc__tick">${t}</text></g>)}
+    {xTicks.map((t) => <text x={x(t)} y={H - padB + 26} text-anchor="middle" class="lc__tick">{t}</text>)}
+    <text x={W - padR} y={H - 6} text-anchor="end" class="lc__axis">financial year starting</text>
+    <text x={padL - 10} y={padT - 10} text-anchor="end" class="lc__axis">$ / tonne</text>
+    {pts.map((p, i) => (
+      <g>
+        <line x1={p.cx} x2={p.cx} y1={y(0)} y2={p.cy} class="lc__stem" />
+        <circle cx={p.cx} cy={p.cy} r={i === pts.length - 1 ? 9 : 6} class={i === pts.length - 1 ? 'lc__dot lc__dot--now' : 'lc__dot'} />
+        {(i === 0 || i === 2 || i === 3 || i === 6 || i === pts.length - 1) && (
+          <text x={p.cx} y={p.cy - 16} text-anchor={i === pts.length - 1 ? 'end' : 'middle'} class="lc__lab">${p.rate}</text>
+        )}
+      </g>
+    ))}
+  </svg>
+  <figcaption>Victoria’s metropolitan landfill levy, per tonne, at the points we could source. From $3 in 1992 to $177.19 in 2026–27 — the gaps are years we haven’t verified, not years with no levy.<Cite id="levy-history" /></figcaption>
+</figure>
+
+<style>
+  .lc { margin: 0; }
+  .lc__svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .lc__grid { stroke: var(--rule); stroke-width: 1; }
+  .lc__tick { font: 500 16px var(--font-body); fill: var(--muted); }
+  .lc__axis { font: 600 14px var(--font-body); fill: var(--muted); }
+  .lc__stem { stroke: var(--steel); stroke-width: 3; opacity: 0.35; }
+  .lc__dot { fill: var(--steel); }
+  .lc__dot--now { fill: var(--navy); }
+  .lc__lab { font: 800 18px var(--font-display); fill: var(--navy); }
+  .lc figcaption { margin-top: 0.9rem; color: var(--muted); font-size: 0.97rem; max-width: 46rem; }
+  @media (max-width: 600px) { .lc__tick { font-size: 24px; } .lc__lab { font-size: 26px; } .lc__axis { font-size: 20px; } }
+</style>

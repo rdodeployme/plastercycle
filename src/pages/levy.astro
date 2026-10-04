@@ -1,0 +1,63 @@
+---
+import Base from '../layouts/Base.astro';
+import LevyChart from '../components/LevyChart.astro';
+import StateLevyTable from '../components/StateLevyTable.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Cite from '../components/Cite.astro';
+import { href } from '../data/site';
+import { LEVIES } from '../data/levies';
+const perBin = (rate: number) => Math.round(rate * 7).toLocaleString('en-AU');
+const vic = LEVIES[0].zones[0].rate;
+---
+<Base title="The landfill levy" description="What every Australian state charges per tonne to landfill in 2026–27, how Victoria's levy has climbed since 1992, and what that means for a bin of plasterboard.">
+  <section class="page-head">
+    <div class="wrap">
+      <p class="crumb"><a href={href('/')}>Home</a> / The landfill levy</p>
+      <h1>The cost of burying it keeps going up.</h1>
+      <p>Every state except the territories charges a levy on each tonne that goes to landfill, on top of the gate fee. The levy only moves one way.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <h2>Victoria, 1992 to now</h2>
+      <LevyChart />
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="wrap grid-2">
+      <div>
+        <h2>Every state, 2026–27</h2>
+        <p>The levy a landfill charges per tonne received. Transfer stations pay it when they send waste on; builders pay it inside their skip rate.</p>
+        <p>Where a state has no levy, landfill gate fees still apply — and plasterboard still shouldn’t be buried.<Cite id="h2s" /></p>
+        <p><a href={href('/councils/#calculator')}>Put your own tonnes through the calculator</a></p>
+      </div>
+      <StateLevyTable />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2>What one full bin is worth</h2>
+      <p>A full Plastercycle bin holds about 7 tonnes.<Cite id="density" /> That makes each load worth this much in levy alone, before the gate fee:</p>
+      <ul class="bins">
+        {LEVIES.filter((s) => s.status !== 'none').map((s) => (
+          <li><span class="bins__code">{s.code}</span><span class="bins__v">${perBin(s.zones[0].rate)}</span><span class="bins__z">{s.zones[0].label}</span></li>
+        ))}
+      </ul>
+      <p class="bins__note">In Victoria, 500 tonnes a year is ${Math.round(500 * vic).toLocaleString('en-AU')} of levy. The point of the bin is that none of it applies to recycled plasterboard.</p>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .bins { list-style: none; margin: 1.5rem 0; padding: 0; display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); }
+  .bins li { background: var(--paper); border-radius: var(--radius-m); padding: 1rem 1.1rem; border-top: 4px solid var(--steel); display: grid; gap: 0.15rem; }
+  .bins__code { font: 800 0.9rem var(--font-display); color: var(--muted); }
+  .bins__v { font: 800 1.7rem/1.1 var(--font-display); color: var(--navy); letter-spacing: -0.02em; }
+  .bins__z { font-size: 0.85rem; color: var(--muted); }
+  .bins__note { color: var(--ink); }
+</style>

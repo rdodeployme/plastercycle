@@ -4,6 +4,15 @@ import Steps from '../components/Steps.astro';
 import Faq from '../components/Faq.astro';
 import CtaBand from '../components/CtaBand.astro';
 import { href, BIN } from '../data/site';
+const howTo = {
+  '@context': 'https://schema.org', '@type': 'HowTo', name: 'How Plastercycle works',
+  step: [
+    { '@type': 'HowToStep', name: 'We drop the bin', text: 'A hook-lift truck sets an enclosed 6.3 m bin down at your transfer station, depot or building site.' },
+    { '@type': 'HowToStep', name: 'You fill it through the side', text: 'Lift a top-hinged panel and slide or throw the plasterboard in. The opening starts about a metre off the ground.' },
+    { '@type': 'HowToStep', name: 'It stays dry', text: 'A closed roof, solid rear door and shut panels keep rain off the load.' },
+    { '@type': 'HowToStep', name: 'We take it away to be recycled', text: 'When it is full we collect it on the same trucks. The board is processed back into gypsum and paper.' },
+  ],
+};
 const faq = [
   { q: 'Who is the bin for?', a: '<p>Council transfer stations and resource recovery centres first, plus depots and larger building sites that throw away a lot of board.</p>' },
   { q: 'How much space does it need?', a: `<p>The bin itself is ${(BIN.length/1000).toFixed(1)} m long and ${(BIN.width/1000).toFixed(2)} m wide. You also need clear, firm ground in front of the hook end so a hook-lift truck can reverse up, drop it and pick it up. We’ll talk through access with you before the first drop.</p>` },
@@ -13,7 +22,7 @@ const faq = [
   { q: 'Can the public use it?', a: '<p>Yes, at a staffed transfer station. Someone should check loads at the gate, because older fibro sheeting can look like plasterboard and must never go in. See <a href="' + href('/what-goes-in/') + '">what goes in</a>.</p>' },
 ];
 ---
-<Base title="How it works" description="We drop an enclosed plasterboard bin, you fill it through the side panels, and we collect it on a hook-lift truck to be recycled.">
+<Base title="How it works" description="We drop an enclosed plasterboard bin, you fill it through the side panels, and we collect it on a hook-lift truck to be recycled." ld={howTo}>
   <section class="page-head">
     <div class="wrap">
       <p class="crumb"><a href={href('/')}>Home</a> / How it works</p>
@@ -35,8 +44,13 @@ const faq = [
       <div>
         <h2>Questions</h2>
         <Faq items={faq} />
+        <p class="more"><a href={href('/faq/')}>All questions, answered</a></p>
       </div>
     </div>
   </section>
   <CtaBand />
 </Base>
+
+<style>
+  .more { margin-top: 1rem; }
+</style>

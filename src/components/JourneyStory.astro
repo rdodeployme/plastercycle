@@ -1,0 +1,176 @@
+---
+/**
+ * The journey of a sheet: six stages, each with a line illustration that draws itself in as it scrolls into view.
+ */
+import Cite from './Cite.astro';
+import { href } from '../data/site';
+const stages = [
+  { id: 'wall', k: 'On the wall', t: 'A sheet is cut to fit. The offcut hits the floor.',
+    d: 'Every house, office fit-out and renovation produces offcuts — builders’ rule of thumb is 5–20% of the board ordered. Pulled out of a mixed skip later, it’s rubbish. Kept aside now, it’s a resource.', cite: 'waste-factor' },
+  { id: 'bin', k: 'Into the bin', t: 'Through the side panel, at waist height.',
+    d: 'The panel lifts, the sheet slides in, the panel shuts. The roof keeps the rain off and the solid door keeps everything else out. Nothing else goes in — one material, kept clean.' },
+  { id: 'truck', k: 'On the truck', t: 'A hook-lift collects the full bin and drops an empty one.',
+    d: 'The same trucks that already run our other recycling bins. You tell us it’s full; we swap it.' },
+  { id: 'plant', k: 'At the plant', t: 'Crushed, screened, and split into gypsum and paper.',
+    d: 'Processing strips the paper liner from the core and grinds the gypsum back to a powder. The paper is separated for recycling; the gypsum is screened clean of fixings.', cite: 'composition' },
+  { id: 'gypsum', k: 'Gypsum, again', t: 'Chemically the same mineral that was quarried to make the sheet.',
+    d: 'Gypsum is calcium sulphate dihydrate. Heat drives off water to make plaster; add water and it sets. The reaction runs both ways, so recovered gypsum can go round again.', cite: 'gypsum-cycle' },
+  { id: 'back', k: 'Back to work', t: 'New plasterboard. Cement. Soil conditioner on a farm.',
+    d: 'Recovered gypsum goes into new board, into cement and concrete, and onto clay soils. The one place it shouldn’t go is landfill, where it can break down into hydrogen sulphide.', cite: 'uses' },
+];
+---
+<div class="jy" data-journey>
+  <ol class="jy__rail" aria-hidden="true">
+    {stages.map((s, i) => <li data-rail={s.id}><span>{i + 1}</span></li>)}
+  </ol>
+  <div class="jy__stages">
+    {stages.map((s, i) => (
+      <section class="jy__stage" id={`stage-${s.id}`} data-stage={s.id}>
+        <div class="jy__art" aria-hidden="true">
+          {s.id === 'wall' && (
+            <svg viewBox="0 0 400 300" class="jy__svg">
+              <rect x="20" y="24" width="360" height="212" class="f-chalk" />
+              <rect x="20" y="24" width="120" height="212" class="f-paper s-navy draw" pathLength="1" />
+              <rect x="140" y="24" width="120" height="212" class="f-paper s-navy draw" pathLength="1" />
+              <rect x="260" y="24" width="120" height="212" class="f-paper s-navy draw" pathLength="1" />
+              <rect x="20" y="236" width="360" height="12" class="f-navy" />
+              <line x1="322" y1="24" x2="322" y2="236" class="s-blue draw d2" pathLength="1" stroke-dasharray="7 7" />
+              <path d="M306 258 l52 -14 l12 32 l-52 14 Z" class="f-blue s-navy draw d3" pathLength="1" />
+              <text x="40" y="280" class="jy__lbl">a sheet, cut to fit</text><text x="294" y="280" class="jy__lbl jy__lbl--b" text-anchor="end">the offcut →</text>
+            </svg>
+          )}
+          {s.id === 'bin' && (
+            <svg viewBox="0 0 400 300" class="jy__svg">
+              <image href={href('/images/3d/side-open.webp')} x="10" y="60" width="380" height="135" preserveAspectRatio="xMidYMid meet" />
+              <path d="M330 40 q30 0 36 36" class="s-green draw d2" pathLength="1" fill="none" marker-end="url(#jy-arrow)" />
+              <path d="M284 20 l40 -10 l8 22 l-40 10 Z" class="f-paper s-navy draw" pathLength="1" />
+              <text x="200" y="250" text-anchor="middle" class="jy__lbl">lift the panel · slide it in · shut the panel</text>
+              <defs><marker id="jy-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#7ab648" /></marker></defs>
+            </svg>
+          )}
+          {s.id === 'truck' && (
+            <svg viewBox="0 0 400 300" class="jy__svg">
+              <path d="M20 232 h360" class="s-rule" />
+              <path d="M26 226 h56 v-70 h40 l22 -36 h26 v106 Z" class="f-navy s-navy draw" pathLength="1" />
+              <rect x="96" y="128" width="28" height="22" class="f-chalk" />
+              <rect x="150" y="212" width="226" height="14" class="f-navy" />
+              <image href={href('/images/3d/side-closed.webp')} x="152" y="130" width="226" height="86" preserveAspectRatio="xMidYMax meet" />
+              <path d="M150 180 q-30 -30 -34 -70" class="s-steel draw d2" pathLength="1" fill="none" />
+              <circle cx="60" cy="232" r="16" class="f-ink" /><circle cx="130" cy="232" r="16" class="f-ink" /><circle cx="300" cy="232" r="16" class="f-ink" /><circle cx="345" cy="232" r="16" class="f-ink" />
+              <text x="200" y="278" text-anchor="middle" class="jy__lbl">full bin off, empty bin on</text>
+            </svg>
+          )}
+          {s.id === 'plant' && (
+            <svg viewBox="0 0 400 300" class="jy__svg">
+              <path d="M110 30 h180 l-30 70 h-120 Z" class="f-chalk s-navy draw" pathLength="1" />
+              <rect x="150" y="14" width="56" height="34" rx="2" class="f-paper s-navy draw" pathLength="1" transform="rotate(-12 178 31)" />
+              <rect x="212" y="18" width="50" height="30" rx="2" class="f-paper s-navy draw" pathLength="1" transform="rotate(9 237 33)" />
+              <rect x="150" y="100" width="100" height="70" class="f-navy" />
+              <circle cx="180" cy="135" r="15" class="s-chalk" fill="none" stroke-width="4" /><circle cx="220" cy="135" r="15" class="s-chalk" fill="none" stroke-width="4" />
+              <path d="M170 170 l-74 62" class="s-navy draw d2" pathLength="1" fill="none" marker-end="url(#jy-arrow2)" />
+              <path d="M230 170 l74 62" class="s-navy draw d2" pathLength="1" fill="none" marker-end="url(#jy-arrow2)" />
+              <path d="M28 264 q46 -52 92 0 Z" class="f-chalk s-navy draw d3" pathLength="1" />
+              <rect x="276" y="244" width="60" height="6" rx="2" class="f-paper s-navy draw d3" pathLength="1" transform="rotate(-10 306 247)" />
+              <rect x="280" y="256" width="60" height="6" rx="2" class="f-paper s-navy draw d3" pathLength="1" transform="rotate(6 310 259)" />
+              <text x="74" y="290" text-anchor="middle" class="jy__lbl jy__lbl--b">gypsum</text><text x="308" y="290" text-anchor="middle" class="jy__lbl jy__lbl--b">paper</text>
+              <defs><marker id="jy-arrow2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#14316b" /></marker></defs>
+            </svg>
+          )}
+          {s.id === 'gypsum' && (
+            <svg viewBox="0 0 400 300" class="jy__svg">
+              <circle cx="200" cy="150" r="100" class="s-rule" fill="none" stroke-dasharray="4 8" />
+              <path d="M200 50 a100 100 0 0 1 86.6 150" class="s-blue draw" pathLength="1" fill="none" marker-end="url(#jy-arrow3)" />
+              <path d="M286.6 200 a100 100 0 0 1 -173.2 0" class="s-green draw d2" pathLength="1" fill="none" marker-end="url(#jy-arrow4)" />
+              <path d="M113.4 200 a100 100 0 0 1 86.6 -150" class="s-navy draw d3" pathLength="1" fill="none" marker-end="url(#jy-arrow5)" />
+              <text x="200" y="36" text-anchor="middle" class="jy__lbl jy__lbl--b">gypsum</text>
+              <text x="200" y="22" text-anchor="middle" class="jy__lbl jy__lbl--s">CaSO₄·2H₂O</text>
+              <text x="318" y="226" class="jy__lbl jy__lbl--b">plaster</text>
+              <text x="318" y="244" class="jy__lbl jy__lbl--s">heat drives off water</text>
+              <text x="82" y="226" text-anchor="end" class="jy__lbl jy__lbl--b">set hard</text>
+              <text x="82" y="244" text-anchor="end" class="jy__lbl jy__lbl--s">add water back</text>
+              <text x="200" y="156" text-anchor="middle" class="jy__lbl jy__lbl--b">round again</text>
+              <defs>
+                <marker id="jy-arrow3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2c66d0" /></marker>
+                <marker id="jy-arrow4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#7ab648" /></marker>
+                <marker id="jy-arrow5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#14316b" /></marker>
+              </defs>
+            </svg>
+          )}
+          {s.id === 'back' && (
+            <svg viewBox="0 0 400 300" class="jy__svg">
+              <rect x="30" y="92" width="86" height="56" class="f-paper s-navy draw" pathLength="1" transform="rotate(-8 73 120)" />
+              <rect x="40" y="108" width="86" height="56" class="f-paper s-navy draw" pathLength="1" transform="rotate(-8 83 136)" />
+              <text x="80" y="200" text-anchor="middle" class="jy__lbl jy__lbl--b">new board</text>
+              <path d="M152 170 h96 l-8 -74 h-80 Z" class="f-chalk s-navy draw d2" pathLength="1" />
+              <rect x="164" y="112" width="72" height="22" class="f-navy" />
+              <text x="200" y="128" text-anchor="middle" class="jy__lbl" style="fill:#fff;font-size:12px;font-weight:700">CEMENT</text>
+              <text x="200" y="200" text-anchor="middle" class="jy__lbl jy__lbl--b">cement</text>
+              <path d="M272 168 h98" class="s-green draw d3" pathLength="1" fill="none" />
+              <path d="M290 168 v-26 M284 150 l6 -8 M296 150 l-6 -8 M321 168 v-34 M315 146 l6 -8 M327 146 l-6 -8 M352 168 v-26 M346 150 l6 -8 M358 150 l-6 -8" class="s-green draw d3" pathLength="1" fill="none" />
+              <text x="321" y="200" text-anchor="middle" class="jy__lbl jy__lbl--b">soil conditioner</text>
+              <path d="M40 250 h320" class="s-rule" />
+              <path d="M200 250 v-28" class="s-blue draw d4" pathLength="1" marker-end="url(#jy-arrowb)" />
+              <text x="200" y="278" text-anchor="middle" class="jy__lbl">recovered gypsum</text>
+              <defs><marker id="jy-arrowb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2c66d0" /></marker></defs>
+            </svg>
+          )}
+        </div>
+        <div class="jy__copy">
+          <p class="jy__k"><span class="jy__n">{i + 1}</span>{s.k}</p>
+          <h2>{s.t}</h2>
+          <p>{s.d}{s.cite && <Cite id={s.cite} />}</p>
+        </div>
+      </section>
+    ))}
+  </div>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-journey]');
+  if (root) {
+    const rail = Array.from(root.querySelectorAll<HTMLElement>('[data-rail]'));
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        const el = e.target as HTMLElement;
+        if (e.isIntersecting) {
+          el.classList.add('is-active');
+          rail.forEach((r) => r.classList.toggle('is-current', r.dataset.rail === el.dataset.stage));
+        }
+      });
+    }, { threshold: 0.45 });
+    root.querySelectorAll('.jy__stage').forEach((s) => io.observe(s));
+    rail.forEach((r) => r.addEventListener('click', () => document.getElementById(`stage-${r.dataset.rail}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })));
+  }
+</script>
+
+<style>
+  .jy { display: grid; grid-template-columns: 1fr; gap: 0; position: relative; }
+  .jy__rail { display: none; }
+  @media (min-width: 900px) {
+    .jy { grid-template-columns: 3rem 1fr; gap: 2rem; }
+    .jy__rail { display: flex; flex-direction: column; gap: 0.5rem; list-style: none; margin: 0; padding: 0; position: sticky; top: 7rem; align-self: start; }
+    .jy__rail li { width: 2.25rem; height: 2.25rem; border-radius: 50%; border: 2px solid var(--rule-strong); display: grid; place-items: center; font: 700 0.85rem var(--font-display); color: var(--muted); cursor: pointer; background: var(--chalk); transition: background-color 0.2s, color 0.2s, border-color 0.2s; }
+    .jy__rail li.is-current { background: var(--navy); border-color: var(--navy); color: #fff; }
+  }
+  .jy__stage { display: grid; gap: 1.5rem 3rem; grid-template-columns: 1fr; align-items: center; padding-block: clamp(2rem, 6vw, 4.5rem); border-top: 1px solid var(--rule); }
+  .jy__stage:first-child { border-top: 0; padding-top: 0; }
+  @media (min-width: 760px) { .jy__stage { grid-template-columns: 1fr 1fr; } .jy__stage:nth-child(even) .jy__art { order: 2; } }
+  .jy__art { background: var(--paper); border-radius: var(--radius-m); padding: clamp(1rem, 3vw, 2rem); }
+  .jy__svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .jy__k { display: flex; align-items: center; gap: 0.6rem; font: 700 0.95rem var(--font-display); color: var(--steel); margin-bottom: 0.6rem; }
+  .jy__n { display: inline-grid; place-items: center; width: 1.8rem; height: 1.8rem; border-radius: 50%; background: var(--steel); color: #fff; font-size: 0.85rem; }
+  .jy__copy h2 { font-size: var(--step-2); }
+  .jy__copy p:last-child { color: var(--ink); }
+  /* drawing */
+  .jy__svg .f-chalk { fill: var(--chalk); } .jy__svg .f-paper { fill: #fff; } .jy__svg .f-blue { fill: var(--steel); } .jy__svg .f-navy { fill: var(--navy); } .jy__svg .f-ink { fill: #1b2333; }
+  .jy__svg .s-rule { stroke: var(--rule-strong); stroke-width: 2; } .jy__svg .s-navy { stroke: var(--navy); stroke-width: 3; stroke-linejoin: round; }
+  .jy__svg .s-blue { stroke: var(--steel); stroke-width: 3; } .jy__svg .s-green { stroke: var(--green); stroke-width: 4; stroke-linecap: round; } .jy__svg .s-steel { stroke: var(--rule-strong); stroke-width: 4; } .jy__svg .s-chalk { stroke: var(--chalk); stroke-width: 3; }
+  .jy__lbl { font: 600 15px var(--font-body); fill: var(--ink); } .jy__lbl--b { font-weight: 700; fill: var(--navy); } .jy__lbl--s { font-size: 12px; fill: var(--muted); font-weight: 500; }
+  .jy__svg .draw { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  /* fills stay visible while the outline draws in */
+  .jy__svg .draw.f-paper, .jy__svg .draw.f-blue, .jy__svg .draw.f-chalk, .jy__svg .draw.f-navy { fill-opacity: 1; }
+  .is-active .jy__svg .draw { animation: jy-draw 0.9s ease forwards; }
+  .is-active .jy__svg .d2 { animation-delay: 0.3s; } .is-active .jy__svg .d3 { animation-delay: 0.6s; } .is-active .jy__svg .d4 { animation-delay: 0.9s; }
+  @keyframes jy-draw { to { stroke-dashoffset: 0; } }
+  @media (prefers-reduced-motion: reduce) { .jy__svg .draw { stroke-dashoffset: 0; animation: none !important; } }
+</style>

@@ -1,0 +1,117 @@
+---
+/**
+ * Interactive 3D bin. Loads Three.js only when the block is near the viewport;
+ * until then (and if WebGL is unavailable) it shows the drawing.
+ */
+import { BIN, href } from '../data/site';
+interface Props { id?: string; autoOpen?: boolean; compact?: boolean }
+const { id = 'bin3d', autoOpen = true, compact = false } = Astro.props;
+---
+<figure class:list={['bin3d', { 'bin3d--compact': compact }]} id={id}
+  data-length={BIN.length / 1000} data-width={BIN.width / 1000} data-height={BIN.height / 1000} data-sill={BIN.sill / 1000} data-auto-open={autoOpen ? '1' : '0'}>
+  <div class="bin3d__stage">
+    <img class="bin3d__fallback" src={href('/images/bin-side-open.webp')} width="1004" height="378" alt="Side view of the bin with both top-hinged loading panels lifted" fetchpriority="high" decoding="async" />
+    <p class="bin3d__hint" aria-hidden="true">Drag to turn it · pinch or scroll to zoom</p>
+  </div>
+  <figcaption class="bin3d__ui">
+    <div class="bin3d__group" role="group" aria-label="Views">
+      <button type="button" data-view="quarter" aria-pressed="true">Overview</button>
+      <button type="button" data-view="side" aria-pressed="false">Side</button>
+      <button type="button" data-view="hook" aria-pressed="false">Hook end</button>
+      <button type="button" data-view="rear" aria-pressed="false">Rear</button>
+      <button type="button" data-view="inside" aria-pressed="false">Inside</button>
+    </div>
+    <div class="bin3d__group bin3d__group--toggles" role="group" aria-label="Open and close">
+      <button type="button" data-toggle="panels" aria-pressed="false">Side panels</button>
+      <button type="button" data-toggle="door" aria-pressed="false">Rear door</button>
+      <button type="button" data-toggle="dims" aria-pressed="false">Dimensions</button>
+    </div>
+  </figcaption>
+</figure>
+
+<script>
+  import type { BinApi } from '../scripts/bin3d';
+  const webgl = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } })();
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('.bin3d').forEach((fig) => {
+    const stage = fig.querySelector<HTMLElement>('.bin3d__stage')!;
+    const ui = fig.querySelector<HTMLElement>('.bin3d__ui')!;
+    if (!webgl) { fig.classList.add('bin3d--static'); return; }
+    let api: BinApi | null = null;
+    const sync = () => {
+      if (!api) return; const s = api.state();
+      ui.querySelectorAll<HTMLButtonElement>('[data-view]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === s.view)));
+      const t: Record<string, boolean> = { panels: s.panels, door: s.door, dims: s.dims };
+      ui.querySelectorAll<HTMLButtonElement>('[data-toggle]').forEach((b) => b.setAttribute('aria-pressed', String(!!t[b.dataset.toggle!])));
+    };
+    const boot = async () => {
+      const { mountBin } = await import('../scripts/bin3d');
+      api = await mountBin(stage, {
+        length: Number(fig.dataset.length), width: Number(fig.dataset.width), height: Number(fig.dataset.height), sill: Number(fig.dataset.sill),
+        autoOpen: fig.dataset.autoOpen === '1', reducedMotion: reduced,
+      });
+      fig.classList.add('bin3d--live');
+      (fig as any).__bin = api;
+      stage.addEventListener('bin3d:state', sync);
+      setTimeout(sync, 600);
+      let hinted = false; const hideHint = () => { if (!hinted) { hinted = true; fig.classList.add('bin3d--touched'); } };
+      stage.addEventListener('pointerdown', hideHint, { once: true }); stage.addEventListener('wheel', hideHint, { once: true, passive: true });
+    };
+    const io = new IntersectionObserver((entries) => { if (entries.some((e) => e.isIntersecting)) { io.disconnect(); boot(); } }, { rootMargin: '300px' });
+    io.observe(fig);
+    ui.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest('button'); if (!b || !api) return;
+      if (b.dataset.view) api.view(b.dataset.view as any);
+      if (b.dataset.toggle === 'panels') api.setPanels(!api.state().panels);
+      if (b.dataset.toggle === 'door') api.setDoor(!api.state().door);
+      if (b.dataset.toggle === 'dims') api.setDimensions(!api.state().dims);
+      sync();
+    });
+  });
+</script>
+
+<style>
+  .bin3d { margin: 0; }
+  .bin3d__stage {
+    position: relative; aspect-ratio: 16 / 8.5; border-radius: var(--radius-m); overflow: hidden;
+    background: radial-gradient(120% 90% at 50% 100%, #e6eaef 0%, var(--chalk) 60%);
+  }
+  .bin3d--compact .bin3d__stage { aspect-ratio: 16 / 9; }
+  .bin3d__fallback { position: absolute; left: 6%; right: 6%; bottom: 12%; width: 88%; height: auto; object-fit: contain; transition: opacity 0.4s; }
+  .bin3d--live .bin3d__fallback { opacity: 0; pointer-events: none; }
+  .bin3d__stage :global(.bin3d__canvas) { position: absolute; inset: 0; width: 100% !important; height: 100% !important; display: block; cursor: grab; }
+  .bin3d__stage :global(.bin3d__canvas:active) { cursor: grabbing; }
+  .bin3d__stage :global(.bin3d__labels) { position: absolute; inset: 0; pointer-events: none; }
+  .bin3d__stage :global(.bin3d__label) {
+    font: 600 0.8rem/1 var(--font-body); color: var(--navy); background: rgba(255,255,255,0.9);
+    padding: 0.2rem 0.45rem; border-radius: 3px; white-space: nowrap; border: 1px solid var(--rule);
+  }
+  .bin3d__hint {
+    position: absolute; left: 50%; bottom: 0.75rem; transform: translateX(-50%); margin: 0;
+    font-size: 0.8rem; color: var(--muted); background: rgba(255,255,255,0.85); padding: 0.3rem 0.7rem; border-radius: 999px;
+    white-space: nowrap; max-width: calc(100% - 1rem); overflow: hidden; text-overflow: ellipsis;
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .bin3d--live .bin3d__hint { opacity: 1; }
+  .bin3d--touched .bin3d__hint, .bin3d--static .bin3d__hint { opacity: 0; }
+  .bin3d__ui { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.75rem 1.5rem; margin-top: 1rem; }
+  .bin3d--static .bin3d__ui { display: none; }
+  .bin3d__group { display: inline-flex; flex-wrap: wrap; gap: 0.4rem; }
+  .bin3d__group button {
+    font: 600 0.9rem var(--font-body); color: var(--navy); background: var(--paper); border: 2px solid var(--rule);
+    border-radius: 999px; padding: 0.5rem 0.95rem; min-height: 2.75rem; cursor: pointer; touch-action: manipulation;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .bin3d__group button:hover { border-color: var(--rule-strong); }
+  .bin3d__group button[aria-pressed='true'] { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .bin3d__group--toggles button[aria-pressed='true'] { background: var(--steel); border-color: var(--steel); }
+  @media (max-width: 600px) {
+    .bin3d__stage { aspect-ratio: 4 / 3.2; }
+    .bin3d__hint { font-size: 0.74rem; }
+    .bin3d__ui { gap: 0.6rem; }
+    .bin3d__group { width: 100%; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.3rem; }
+    .bin3d__group--toggles { grid-template-columns: repeat(3, 1fr); }
+    .bin3d__group button { padding: 0.5rem 0.2rem; font-size: 0.78rem; border-radius: var(--radius-s); }
+  }
+</style>

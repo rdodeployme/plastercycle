@@ -1,0 +1,46 @@
+---
+/** The gypsum loop: quarry or recovered gypsum → plaster → board → waste → recovered gypsum, around again. */
+import Cite from './Cite.astro';
+---
+<figure class="gc">
+  <svg viewBox="0 0 900 520" class="gc__svg" role="img" aria-label="The gypsum loop: gypsum is heated into plaster, made into board, used, recovered from the bin, processed back to gypsum, and goes round again. Landfill is the exit from the loop.">
+    <defs>
+      <marker id="gc-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2c66d0" /></marker>
+      <marker id="gc-g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#7ab648" /></marker>
+      <marker id="gc-r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#a3341f" /></marker>
+    </defs>
+    <!-- loop -->
+    <circle cx="450" cy="250" r="170" fill="none" stroke="#c5ccd6" stroke-width="2" stroke-dasharray="3 9" />
+    <!-- nodes: top, right, bottom, left -->
+    <g class="gc__node"><rect x="370" y="40" width="160" height="56" rx="8" /><text x="450" y="63" text-anchor="middle" class="gc__t">Gypsum</text><text x="450" y="84" text-anchor="middle" class="gc__s">CaSO₄·2H₂O</text></g>
+    <g class="gc__node"><rect x="640" y="222" width="160" height="56" rx="8" /><text x="720" y="245" text-anchor="middle" class="gc__t">Plaster</text><text x="720" y="266" text-anchor="middle" class="gc__s">CaSO₄·½H₂O</text></g>
+    <g class="gc__node"><rect x="370" y="404" width="160" height="56" rx="8" /><text x="450" y="427" text-anchor="middle" class="gc__t">Plasterboard</text><text x="450" y="448" text-anchor="middle" class="gc__s">on the wall, then an offcut</text></g>
+    <g class="gc__node gc__node--green"><rect x="100" y="222" width="160" height="56" rx="8" /><text x="180" y="245" text-anchor="middle" class="gc__t">Recovered</text><text x="180" y="266" text-anchor="middle" class="gc__s">from the Plastercycle bin</text></g>
+    <!-- arrows along the loop -->
+    <path d="M538 80 A170 170 0 0 1 612 214" fill="none" stroke="#2c66d0" stroke-width="4" marker-end="url(#gc-a)" />
+    <text x="610" y="128" class="gc__e">heat · water driven off</text>
+    <path d="M612 288 A170 170 0 0 1 540 418" fill="none" stroke="#2c66d0" stroke-width="4" marker-end="url(#gc-a)" />
+    <text x="600" y="380" class="gc__e">add water · sets hard</text>
+    <path d="M360 420 A170 170 0 0 1 288 290" fill="none" stroke="#7ab648" stroke-width="4" marker-end="url(#gc-g)" />
+    <text x="290" y="380" text-anchor="end" class="gc__e">collected · crushed · screened</text>
+    <path d="M286 210 A170 170 0 0 1 360 82" fill="none" stroke="#7ab648" stroke-width="4" marker-end="url(#gc-g)" />
+    <text x="290" y="128" text-anchor="end" class="gc__e">same mineral, again</text>
+    <!-- the exit -->
+    <path d="M450 462 L450 505" fill="none" stroke="#a3341f" stroke-width="3" stroke-dasharray="6 6" marker-end="url(#gc-r)" />
+    <text x="470" y="498" class="gc__x">landfill: out of the loop, and a hydrogen sulphide risk</text>
+  </svg>
+  <figcaption>Gypsum’s chemistry runs both ways, which is why plasterboard can be recycled over and over. The only one-way street is landfill.<Cite id="gypsum-cycle" /></figcaption>
+</figure>
+
+<style>
+  .gc { margin: 0; }
+  .gc__svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .gc__node rect { fill: var(--paper); stroke: var(--navy); stroke-width: 2; }
+  .gc__node--green rect { stroke: var(--green); fill: #f3f8ec; }
+  .gc__t { font: 800 20px var(--font-display); fill: var(--navy); }
+  .gc__s { font: 500 13px var(--font-body); fill: var(--muted); }
+  .gc__e { font: 600 14px var(--font-body); fill: var(--ink); }
+  .gc__x { font: 600 14px var(--font-body); fill: var(--danger); }
+  .gc figcaption { margin-top: 0.9rem; color: var(--muted); font-size: 0.97rem; max-width: 46rem; }
+  @media (max-width: 600px) { .gc__t { font-size: 26px; } .gc__s, .gc__e, .gc__x { font-size: 19px; } }
+</style>

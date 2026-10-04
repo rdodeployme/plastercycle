@@ -1,0 +1,38 @@
+---
+import { LEVIES } from '../data/levies';
+import Cite from './Cite.astro';
+const max = Math.max(...LEVIES.flatMap((s) => s.zones.map((z) => z.rate)));
+---
+<div class="slt">
+  <table class="slt__table">
+    <caption class="visually-hidden">Landfill levy per tonne by state, 2026–27</caption>
+    <thead><tr><th scope="col">State</th><th scope="col">Zone</th><th scope="col" class="slt__num">$ / t</th><th scope="col" class="slt__barh"><span class="visually-hidden">Relative</span></th></tr></thead>
+    <tbody>
+      {LEVIES.map((s) => s.zones.map((z, i) => (
+        <tr class:list={[{ 'slt__first': i === 0 }]}>
+          {i === 0 ? <th scope="rowgroup" rowspan={s.zones.length}><span class="slt__code">{s.code}</span><span class="slt__name">{s.name}</span>{s.status === 'anticipated' && <span class="slt__tag">published schedule</span>}</th> : null}
+          <td>{z.label}</td>
+          <td class="slt__num">{z.rate ? `$${z.rate.toFixed(2)}` : '—'}</td>
+          <td class="slt__barh"><span class="slt__bar" style={`--w:${(z.rate / max) * 100}%`}></span></td>
+        </tr>
+      )))}
+    </tbody>
+  </table>
+  <p class="slt__foot">2026–27 rates, checked October 2026. Levies are per tonne received at landfill; the gate fee is on top.<Cite id="levy-states" /></p>
+</div>
+
+<style>
+  .slt__table { width: 100%; border-collapse: collapse; background: var(--paper); border-radius: var(--radius-m); overflow: hidden; }
+  .slt__table th, .slt__table td { text-align: left; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--chalk); vertical-align: top; font-size: 0.97rem; }
+  .slt__table thead th { font-size: 0.8rem; color: var(--muted); font-weight: 600; letter-spacing: 0.02em; }
+  .slt__table tbody th { vertical-align: top; }
+  .slt__first td, .slt__first th { border-top: 2px solid var(--rule); }
+  .slt__code { display: block; font: 800 1.05rem var(--font-display); color: var(--navy); }
+  .slt__name { display: block; font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+  .slt__tag { display: inline-block; margin-top: 0.3rem; font-size: 0.72rem; font-weight: 600; color: var(--green-ink); background: #eef6e6; padding: 0.1rem 0.4rem; border-radius: 3px; }
+  .slt__num { text-align: right; font: 700 1rem var(--font-display); color: var(--navy); white-space: nowrap; }
+  .slt__barh { width: 28%; }
+  .slt__bar { display: block; height: 14px; width: var(--w); min-width: 2px; background: var(--steel); border-radius: 2px; }
+  .slt__foot { margin-top: 0.9rem; color: var(--muted); font-size: 0.95rem; }
+  @media (max-width: 600px) { .slt__barh { display: none; } .slt__table th, .slt__table td { padding: 0.6rem 0.6rem; font-size: 0.92rem; } }
+</style>

@@ -1,10 +1,19 @@
 ---
 import Cite from './Cite.astro';
-import { LEVY_METRO, LEVY_RURAL } from '../data/facts';
+import { LEVIES } from '../data/levies';
+interface Props { mode?: 'site' | 'builder' }
+const { mode = 'site' } = Astro.props;
+const KG_PER_M2 = 6.5; // working figure, see fact 'sheet-weight'
+const SHEET_M2 = 2.88; // 2,400 × 1,200 mm
 ---
-<div class="calc" id="calculator" data-metro={LEVY_METRO} data-rural={LEVY_RURAL}>
+<div class="calc" id="calculator" data-mode={mode} data-kgm2={KG_PER_M2} data-sheetm2={SHEET_M2}>
   <form class="calc__in" aria-label="Landfill levy savings calculator" onsubmit="return false">
-    <div class="calc__field">
+    <div class="calc__modes" role="group" aria-label="Who is this for">
+      <button type="button" data-mode="site" aria-pressed={mode === 'site' ? 'true' : 'false'}>Transfer station or depot</button>
+      <button type="button" data-mode="builder" aria-pressed={mode === 'builder' ? 'true' : 'false'}>Builder or site</button>
+    </div>
+
+    <div class="calc__field" data-for="site">
       <label for="c-t">Plasterboard coming through your site each year</label>
       <div class="calc__tonnes">
         <input id="c-t-range" type="range" min="10" max="3000" step="10" value="250" aria-label="Tonnes a year (slider)" />
@@ -13,13 +22,33 @@ import { LEVY_METRO, LEVY_RURAL } from '../data/facts';
       <p class="calc__hint">Not sure? Albury and Federation councils estimated about 1,000 t a year of builders’ offcuts alone.<Cite id="albury" /></p>
     </div>
 
-    <fieldset class="calc__field">
-      <legend>Where your landfill is</legend>
-      <div class="calc__seg">
-        <label><input type="radio" name="zone" value="metro" checked /><span>Metropolitan Victoria<small>${LEVY_METRO.toFixed(2)} / t levy</small></span></label>
-        <label><input type="radio" name="zone" value="rural" /><span>Rural Victoria<small>${LEVY_RURAL.toFixed(2)} / t levy</small></span></label>
+    <div class="calc__field" data-for="builder" hidden>
+      <label for="c-area">Plasterboard going into the job</label>
+      <div class="calc__row2">
+        <div class="calc__num"><input id="c-area" type="number" inputmode="numeric" enterkeyhint="done" min="0" step="10" value="2000" /><span>m² of board</span></div>
+        <div class="calc__num"><input id="c-sheets" type="number" inputmode="numeric" enterkeyhint="done" min="0" step="1" /><span>sheets (2.4 × 1.2)</span></div>
       </div>
-      <p class="calc__hint">2026–27 levy on industrial waste — what a transfer station pays when it sends waste on to landfill.<Cite id="levy" /></p>
+      <label for="c-waste" class="calc__sub">Offcut rate</label>
+      <div class="calc__tonnes">
+        <input id="c-waste" type="range" min="5" max="20" step="1" value="10" aria-label="Offcut rate, per cent of board ordered" />
+        <div class="calc__num calc__num--pct"><output id="c-waste-out">10</output><span>% ends up as waste</span></div>
+      </div>
+      <p class="calc__hint">Builders’ rule of thumb is 5–20% of the board ordered.<Cite id="waste-factor" /> At 6.5 kg/m² a standard sheet is about 19 kg.<Cite id="sheet-weight" label="workings" /></p>
+    </div>
+
+    <fieldset class="calc__field">
+      <legend>Where the landfill is</legend>
+      <div class="calc__row2">
+        <div class="calc__select">
+          <label for="c-state" class="visually-hidden">State</label>
+          <select id="c-state">{LEVIES.map((s) => <option value={s.code}>{s.name}</option>)}</select>
+        </div>
+        <div class="calc__select">
+          <label for="c-zone" class="visually-hidden">Levy zone</label>
+          <select id="c-zone"></select>
+        </div>
+      </div>
+      <p class="calc__hint" id="c-levy-note">2026–27 state levy, per tonne.<Cite id="levy-states" /></p>
     </fieldset>
 
     <div class="calc__row2">
@@ -37,59 +66,120 @@ import { LEVY_METRO, LEVY_RURAL } from '../data/facts';
   </form>
 
   <div class="calc__out" aria-live="polite">
-    <p class="calc__label">Landfill costs avoided each year</p>
+    <p class="calc__label" data-out="label">Landfill costs avoided each year</p>
     <p class="calc__big" data-out="total">$0</p>
     <dl class="calc__dl">
-      <div><dt>State levy avoided</dt><dd data-out="levy">$0</dd></div>
+      <div><dt>Plasterboard</dt><dd data-out="tonnes">0 t</dd></div>
+      <div><dt data-out="levyLabel">State levy avoided</dt><dd data-out="levy">$0</dd></div>
       <div><dt>Gate fees avoided</dt><dd data-out="gate">$0</dd></div>
-      <div><dt>Levy avoided per full bin</dt><dd data-out="perbin">$0</dd></div>
-      <div><dt>Full bins a year</dt><dd data-out="bins">0</dd></div>
+      <div><dt>Full bins</dt><dd data-out="bins">0</dd></div>
     </dl>
     <div class="calc__bins" data-out="binviz" aria-hidden="true"></div>
     <p class="calc__freq" data-out="freq"></p>
+    <p class="calc__line" data-out="line"></p>
+    <div class="calc__share">
+      <button type="button" class="calc__copy" data-copy>Copy a link to this result</button>
+      <span class="calc__copied" data-copied hidden>Link copied</span>
+    </div>
     <p class="calc__small">This is the landfill cost the plasterboard no longer attracts. It doesn’t include Plastercycle’s service charge — we quote that once we know your site.</p>
   </div>
 </div>
 
 <script>
+  import { LEVIES } from '../data/levies';
   const root = document.getElementById('calculator');
   if (root) {
-    const metro = Number(root.dataset.metro), rural = Number(root.dataset.rural);
     const $ = <T extends Element>(s: string) => root.querySelector<T>(s)!;
-    const t = $<HTMLInputElement>('#c-t'), tr = $<HTMLInputElement>('#c-t-range');
-    const gate = $<HTMLInputElement>('#c-gate'), perBin = $<HTMLInputElement>('#c-bin');
     const out = (k: string) => $<HTMLElement>(`[data-out="${k}"]`);
     const money = (n: number) => '$' + Math.round(n).toLocaleString('en-AU');
+    const t = $<HTMLInputElement>('#c-t'), tr = $<HTMLInputElement>('#c-t-range');
+    const area = $<HTMLInputElement>('#c-area'), sheets = $<HTMLInputElement>('#c-sheets'), waste = $<HTMLInputElement>('#c-waste'), wasteOut = $<HTMLOutputElement>('#c-waste-out');
+    const stateSel = $<HTMLSelectElement>('#c-state'), zoneSel = $<HTMLSelectElement>('#c-zone'), note = $<HTMLElement>('#c-levy-note');
+    const gate = $<HTMLInputElement>('#c-gate'), perBin = $<HTMLInputElement>('#c-bin');
+    const KG = Number(root.dataset.kgm2), SHEET = Number(root.dataset.sheetm2);
+    let mode = root.dataset.mode || 'site';
+    const citeHtml = note.querySelector('a')?.outerHTML || '';
+
+    const fillZones = (keepZone?: string) => {
+      const st = LEVIES.find((s) => s.code === stateSel.value)!;
+      zoneSel.innerHTML = st.zones.map((z) => `<option value="${z.id}">${z.label}${z.rate ? ` · $${z.rate.toFixed(2)}/t` : ''}</option>`).join('');
+      if (keepZone && st.zones.some((z) => z.id === keepZone)) zoneSel.value = keepZone;
+      zoneSel.disabled = st.zones.length < 2;
+      const status = st.status === 'anticipated' ? ' Published schedule, not yet prescribed.' : st.status === 'none' ? ' No state levy here — put your gate fee in the box below.' : '';
+      note.innerHTML = `2026–27 state levy, per tonne.${st.note ? ' ' + st.note : ''}${status} ${citeHtml}`;
+    };
+    const setMode = (m: string) => {
+      mode = m; root.dataset.mode = m;
+      root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
+      root.querySelectorAll<HTMLElement>('[data-for]').forEach((el) => { el.hidden = el.dataset.for !== m; });
+    };
+    const tonnes = () => {
+      if (mode === 'builder') {
+        const m2 = Math.max(0, Number(area.value) || 0);
+        return m2 * (KG / 1000) * (Number(waste.value) / 100);
+      }
+      return Math.max(0, Number(t.value) || 0);
+    };
     const run = () => {
-      const tonnes = Math.max(0, Number(t.value) || 0);
-      const zone = (root.querySelector<HTMLInputElement>('input[name="zone"]:checked')?.value) || 'metro';
-      const levyRate = zone === 'rural' ? rural : metro;
+      const st = LEVIES.find((s) => s.code === stateSel.value)!;
+      const zone = st.zones.find((z) => z.id === zoneSel.value) || st.zones[0];
+      const rate = zone.rate;
+      const tn = tonnes();
       const g = Math.max(0, Number(gate.value) || 0);
       const pb = Math.min(12, Math.max(3, Number(perBin.value) || 7));
-      const levy = tonnes * levyRate, gates = tonnes * g;
-      const bins = tonnes / pb;
+      const levy = tn * rate, gates = tn * g;
+      const bins = tn / pb, n = Math.ceil(bins);
+      const yearly = mode === 'site';
+      out('label').textContent = yearly ? 'Landfill costs avoided each year' : 'Landfill costs avoided on this job';
       out('total').textContent = money(levy + gates);
       out('mini').textContent = money(levy + gates);
-      tr.style.setProperty('--fill', `${(Math.min(3000, tonnes) - 10) / (3000 - 10) * 100}%`);
-      out('levy').textContent = money(levy);
+      out('tonnes').textContent = (tn >= 10 ? Math.round(tn) : Math.round(tn * 10) / 10).toLocaleString('en-AU') + ' t';
+      out('levyLabel').textContent = st.status === 'none' ? 'State levy' : `${st.code} levy avoided`;
+      out('levy').textContent = st.status === 'none' ? 'none' : money(levy);
       out('gate').textContent = g ? money(gates) : '—';
-      out('perbin').textContent = money(pb * levyRate);
-      out('bins').textContent = bins < 1 && bins > 0 ? 'under 1' : Math.ceil(bins).toLocaleString('en-AU');
-      const n = Math.ceil(bins);
+      out('bins').textContent = bins > 0 && bins < 1 ? 'under 1' : n.toLocaleString('en-AU');
       const shown = Math.min(n, 60);
       out('binviz').innerHTML = Array.from({ length: shown }, () => '<i></i>').join('') + (n > 60 ? `<b>+${(n - 60).toLocaleString('en-AU')}</b>` : '');
       let f = '';
-      if (n >= 1) {
+      if (yearly && n >= 1) {
         const weeks = 52 / bins;
         f = weeks >= 2 ? `About one full bin every ${Math.round(weeks)} weeks.` : bins < 104 ? `About ${Math.round(bins / 12)} full bins a month.` : `About ${Math.round(bins / 52)} full bins a week.`;
+      } else if (!yearly && tn > 0) {
+        f = n <= 1 ? 'Fits in one bin.' : `About ${n} bin loads over the job.`;
       }
       out('freq').textContent = f;
+      const metres = n * 6.3;
+      out('line').textContent = n >= 20 ? `Parked end to end, that’s ${metres >= 1000 ? (metres / 1000).toFixed(1) + ' km' : Math.round(metres) + ' m'} of bins.` : '';
+      tr.style.setProperty('--fill', `${(Math.min(3000, tn) - 10) / (3000 - 10) * 100}%`);
+      waste.style.setProperty('--fill', `${(Number(waste.value) - 5) / 15 * 100}%`);
+      wasteOut.value = waste.value;
+      const p = new URLSearchParams({ mode, state: stateSel.value, zone: zoneSel.value, t: String(Math.round(tn)), bin: perBin.value });
+      if (mode === 'builder') { p.set('m2', area.value); p.set('waste', waste.value); }
+      if (g) p.set('gate', String(g));
+      history.replaceState(null, '', `#calculator?${p}`);
     };
     t.addEventListener('input', () => { tr.value = String(Math.min(3000, Number(t.value) || 0)); run(); });
     tr.addEventListener('input', () => { t.value = tr.value; run(); });
-    root.querySelectorAll('input').forEach((i) => i.addEventListener('input', run));
+    area.addEventListener('input', () => { sheets.value = area.value ? String(Math.round(Number(area.value) / SHEET)) : ''; run(); });
+    sheets.addEventListener('input', () => { area.value = sheets.value ? String(Math.round(Number(sheets.value) * SHEET)) : ''; run(); });
+    stateSel.addEventListener('change', () => { fillZones(); run(); });
+    root.querySelectorAll('input, select').forEach((i) => i.addEventListener('input', run));
+    root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach((b) => b.addEventListener('click', () => { setMode(b.dataset.mode!); run(); }));
+    $<HTMLButtonElement>('[data-copy]').addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(location.href); const c = $<HTMLElement>('[data-copied]'); c.hidden = false; setTimeout(() => { c.hidden = true; }, 2000); } catch { prompt('Copy this link', location.href); }
+    });
+    const h = location.hash; const q = h.includes('?') ? new URLSearchParams(h.slice(h.indexOf('?') + 1)) : null;
+    if (q) {
+      if (q.get('mode')) setMode(q.get('mode')!); else setMode(mode);
+      if (q.get('state') && LEVIES.some((s) => s.code === q.get('state'))) stateSel.value = q.get('state')!;
+      fillZones(q.get('zone') || undefined);
+      if (q.get('t') && mode === 'site') { t.value = q.get('t')!; tr.value = String(Math.min(3000, Number(t.value))); }
+      if (q.get('m2')) { area.value = q.get('m2')!; sheets.value = String(Math.round(Number(area.value) / SHEET)); }
+      if (q.get('waste')) waste.value = q.get('waste')!;
+      if (q.get('gate')) gate.value = q.get('gate')!;
+      if (q.get('bin')) perBin.value = q.get('bin')!;
+    } else { setMode(mode); fillZones(); sheets.value = String(Math.round(Number(area.value) / SHEET)); }
     run();
-    // Hide the running total once the full results panel is on screen.
     const outPanel = root.querySelector('.calc__out');
     if (outPanel && 'IntersectionObserver' in window) {
       new IntersectionObserver(([e]) => root.classList.toggle('is-out-visible', e.isIntersecting), { threshold: 0 }).observe(outPanel);
@@ -100,22 +190,19 @@ import { LEVY_METRO, LEVY_RURAL } from '../data/facts';
 <style>
   .calc { --pad: clamp(1.25rem, 3.5vw, 2.5rem); display: grid; gap: 0; grid-template-columns: 1fr; background: var(--paper); border-radius: var(--radius-m); overflow: hidden; overflow: clip; border: 1px solid var(--rule); }
   @media (min-width: 960px) { .calc { grid-template-columns: 1.15fr 1fr; } }
-  .calc__in { padding: var(--pad); display: grid; gap: 1.6rem; }
+  .calc__in { padding: var(--pad); display: grid; gap: 1.5rem; }
+  .calc__modes { display: grid; grid-template-columns: 1fr 1fr; border: 2px solid var(--navy); border-radius: var(--radius-s); overflow: hidden; }
+  .calc__modes button { font: 600 0.95rem var(--font-body); background: transparent; color: var(--navy); border: 0; padding: 0.65rem 0.5rem; min-height: 2.75rem; cursor: pointer; touch-action: manipulation; }
+  .calc__modes button[aria-pressed='true'] { background: var(--navy); color: #fff; }
   .calc__field { border: 0; margin: 0; padding: 0; min-width: 0; }
   .calc label, .calc legend { display: block; font-weight: 600; color: var(--navy); margin-bottom: 0.6rem; padding: 0; }
+  .calc__sub { margin-top: 1rem; }
   .calc__opt { font-weight: 400; color: var(--muted); }
   .calc__tonnes { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center; }
-  @media (max-width: 520px) { .calc__tonnes { grid-template-columns: 1fr; gap: 0.35rem; } .calc__tonnes .calc__num { justify-self: start; } .calc__seg span { padding: 0.75rem; } .calc__big { font-size: 2.6rem; } }
-  /* slider: thick track that fills, large thumb for thumbs */
+  @media (max-width: 520px) { .calc__tonnes { grid-template-columns: 1fr; gap: 0.35rem; } .calc__tonnes .calc__num { justify-self: start; } .calc__big { font-size: 2.6rem; } }
   .calc input[type='range'] { -webkit-appearance: none; appearance: none; width: 100%; height: 2.75rem; background: transparent; margin: 0; cursor: pointer; touch-action: pan-y; }
-  .calc input[type='range']::-webkit-slider-runnable-track {
-    height: 8px; border-radius: 4px;
-    background: linear-gradient(var(--steel), var(--steel)) 0 / var(--fill, 8%) 100% no-repeat, var(--rule);
-  }
-  .calc input[type='range']::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 30px; height: 30px; margin-top: -11px; border-radius: 50%;
-    background: #fff; border: 3px solid var(--steel); box-shadow: 0 1px 4px rgba(20, 49, 107, 0.3);
-  }
+  .calc input[type='range']::-webkit-slider-runnable-track { height: 8px; border-radius: 4px; background: linear-gradient(var(--steel), var(--steel)) 0 / var(--fill, 8%) 100% no-repeat, var(--rule); }
+  .calc input[type='range']::-webkit-slider-thumb { -webkit-appearance: none; width: 30px; height: 30px; margin-top: -11px; border-radius: 50%; background: #fff; border: 3px solid var(--steel); box-shadow: 0 1px 4px rgba(20, 49, 107, 0.3); }
   .calc input[type='range']::-moz-range-track { height: 8px; border-radius: 4px; background: var(--rule); }
   .calc input[type='range']::-moz-range-progress { height: 8px; border-radius: 4px; background: var(--steel); }
   .calc input[type='range']::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: #fff; border: 3px solid var(--steel); }
@@ -123,33 +210,21 @@ import { LEVY_METRO, LEVY_RURAL } from '../data/facts';
   .calc input[type='range']:focus-visible::-webkit-slider-thumb { outline: 3px solid var(--green); outline-offset: 2px; }
   .calc__num { display: inline-flex; align-items: center; gap: 0.4rem; border: 2px solid var(--rule-strong); border-radius: var(--radius-s); padding: 0 0.75rem; background: #fff; }
   .calc__num:focus-within { border-color: var(--steel); }
-  .calc__num input { border: 0; outline: 0; font: 700 1.15rem var(--font-display); color: var(--navy); width: 5.5rem; min-height: 2.75rem; background: transparent; }
+  .calc__num input, .calc__num output { border: 0; outline: 0; font: 700 1.15rem var(--font-display); color: var(--navy); width: 5.5rem; min-height: 2.75rem; background: transparent; display: inline-flex; align-items: center; }
+  .calc__num output { width: auto; min-width: 2.2rem; }
   .calc__num span { color: var(--muted); font-size: 0.95rem; white-space: nowrap; }
   .calc__num--money input { width: 4.5rem; }
   .calc__hint { font-size: 0.9rem; color: var(--muted); margin: 0.5rem 0 0; }
-  .calc__seg { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
-  .calc__seg label { margin: 0; font-weight: 500; cursor: pointer; }
-  .calc__seg input { position: absolute; opacity: 0; pointer-events: none; }
-  .calc__seg span { display: block; border: 2px solid var(--rule-strong); border-radius: var(--radius-s); padding: 0.7rem 0.85rem; color: var(--ink); line-height: 1.3; }
-  .calc__seg small { display: block; color: var(--muted); font-size: 0.85rem; margin-top: 0.2rem; }
-  .calc__seg input:checked + span { border-color: var(--steel); background: #eaf1fc; color: var(--navy); font-weight: 600; }
-  .calc__seg input:focus-visible + span { outline: 3px solid var(--green); outline-offset: 2px; }
-  .calc__row2 { display: grid; gap: 1.6rem; grid-template-columns: 1fr; }
+  .calc__row2 { display: grid; gap: 1rem 1.5rem; grid-template-columns: 1fr; }
   @media (min-width: 560px) { .calc__row2 { grid-template-columns: 1fr 1fr; } }
+  .calc__select select { width: 100%; font: 600 1rem var(--font-body); color: var(--navy); background: #fff; border: 2px solid var(--rule-strong); border-radius: var(--radius-s); padding: 0.6rem 0.75rem; min-height: 3rem; }
+  .calc__select select:disabled { color: var(--muted); font-weight: 500; }
+  .calc__select select:focus { outline: none; border-color: var(--steel); box-shadow: 0 0 0 3px rgba(44,102,208,0.2); }
 
-  /* phones and tablets: the total follows you down the inputs */
   .calc__mini { display: none; }
   @media (max-width: 959px) {
-    .calc__mini {
-      display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
-      position: sticky; bottom: 0; z-index: 2;
-      margin: 0 calc(-1 * var(--pad)) calc(-1 * var(--pad));
-      padding: 0.8rem var(--pad) max(0.8rem, env(safe-area-inset-bottom));
-      background: var(--navy); color: #c3cfe6; font-size: 0.9rem;
-      box-shadow: 0 -6px 16px rgba(20, 49, 107, 0.18);
-    }
+    .calc__mini { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; position: sticky; bottom: 0; z-index: 2; margin: 0 calc(-1 * var(--pad)) calc(-1 * var(--pad)); padding: 0.8rem var(--pad) max(0.8rem, env(safe-area-inset-bottom)); background: var(--navy); color: #c3cfe6; font-size: 0.9rem; box-shadow: 0 -6px 16px rgba(20, 49, 107, 0.18); transition: opacity 0.2s, transform 0.2s; }
     .calc__mini strong { font: 800 1.45rem/1 var(--font-display); color: #fff; letter-spacing: -0.02em; }
-    .calc__mini { transition: opacity 0.2s, transform 0.2s; }
     .calc.is-out-visible .calc__mini { opacity: 0; transform: translateY(100%); pointer-events: none; }
   }
   .calc__out { background: var(--navy); color: #fff; padding: var(--pad); display: flex; flex-direction: column; }
@@ -163,6 +238,11 @@ import { LEVY_METRO, LEVY_RURAL } from '../data/facts';
   .calc__bins :global(i) { width: 26px; height: 12px; background: var(--steel); border: 1px solid #6f9ae6; border-radius: 2px; position: relative; }
   .calc__bins :global(i)::after { content: ''; position: absolute; left: 50%; top: 1px; bottom: 1px; width: 1px; background: rgba(255,255,255,0.4); }
   .calc__bins :global(b) { font-size: 0.85rem; color: #c3cfe6; align-self: center; margin-left: 0.25rem; }
-  .calc__freq { color: #fff; font-weight: 600; margin-bottom: 1rem; }
+  .calc__freq { color: #fff; font-weight: 600; margin-bottom: 0.25rem; }
+  .calc__line { color: #c3cfe6; margin-bottom: 1rem; }
+  .calc__share { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+  .calc__copy { font: 600 0.9rem var(--font-body); color: #fff; background: transparent; border: 1.5px solid rgba(255,255,255,0.5); border-radius: var(--radius-s); padding: 0.5rem 0.8rem; min-height: 2.75rem; cursor: pointer; }
+  .calc__copy:hover { border-color: #fff; background: rgba(255,255,255,0.08); }
+  .calc__copied { color: var(--green); font-weight: 600; font-size: 0.9rem; }
   .calc__small { font-size: 0.85rem; color: #a9b8d6; margin: auto 0 0; }
 </style>

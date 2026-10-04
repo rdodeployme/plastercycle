@@ -1,6 +1,6 @@
 ---
 import Logo from './Logo.astro';
-import { NAV, CTA, SITE, href } from '../data/site';
+import { NAV, CTA, SITE, FOOTER_EXTRA, href } from '../data/site';
 const year = new Date().getFullYear();
 ---
 <footer class="ftr">
@@ -12,7 +12,7 @@ const year = new Date().getFullYear();
     <nav aria-label="Footer">
       <ul>
         {NAV.map((n) => <li><a href={href(n.href)}>{n.label}</a></li>)}
-        <li><a href={href('/facts/')}>Facts and sources</a></li>
+        {FOOTER_EXTRA.map((n) => <li><a href={href(n.href)}>{n.label}</a></li>)}
         <li><a href={href(CTA.href)}>{CTA.label}</a></li>
       </ul>
     </nav>

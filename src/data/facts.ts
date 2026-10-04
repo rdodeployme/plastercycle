@@ -167,6 +167,77 @@ export const FACTS: Fact[] = [
     kind: 'derived',
     sources: [{ name: 'Starke Arvid — Plasterboard chipper product sheet', url: 'https://sitebox.ltd.uk/docs/starkearvid_37000/Plasterboard%20Chipper.pdf' }],
   },
+  {
+    id: 'levy-states',
+    title: 'Landfill levies around Australia, 2026–27',
+    statement:
+      'Per tonne: Victoria $177.19 metro ($155.95 rural industrial, $88.42 rural municipal); NSW $180.20 in the metropolitan levy area and $103.80 regional; Queensland $135 metro and $100 regional (general waste); South Australia $171 metro and $85.50 non-metro; Western Australia $90 in the Perth metropolitan region (published schedule; $88 prescribed for 2025–26); Tasmania $70.56 statewide. The ACT and Northern Territory have no state levy, though landfill gate fees still apply.',
+    kind: 'reported',
+    sources: [
+      { name: 'EPA Victoria — Waste levy', url: 'https://www.epa.vic.gov.au/node/43639' },
+      { name: 'NSW EPA — Waste levy areas and levy rates', url: 'https://www.epa.nsw.gov.au/Your-environment/Waste/waste-levy/levy-regulated-area-and-levy-rates' },
+      { name: 'Queensland Government — Waste levy rates', url: 'https://www.qld.gov.au/environment/circular-economy-waste-reduction/disposal-levy/about/levy-rates' },
+      { name: 'EPA South Australia — Waste levy', url: 'https://www.epa.sa.gov.au/business_and_industry/waste-levy' },
+      { name: 'WA Government — Waste levy rate schedule', url: 'https://www.wa.gov.au/service/environment/environment-information-services/waste-levy-rate-schedule' },
+      { name: 'NRE Tasmania — The landfill levy', url: 'https://nre.tas.gov.au/environment/waste-and-resource-recovery/landfill-levy' },
+    ],
+  },
+  {
+    id: 'levy-history',
+    title: 'How Victoria’s levy has climbed',
+    statement:
+      'The Victorian landfill levy started at $3 a tonne in 1992. It was $9 in 2009–10 and rose to $30 in 2010–11. It was $65.90 in 2019–20, $105.90 in 2021–22, $125.90 in 2022–23, $129.27 in 2023–24, $132.76 in 2024–25, $169.79 in 2025–26 and is $177.19 in 2026–27 (metropolitan municipal and industrial waste).',
+    kind: 'reported',
+    sources: [
+      { name: 'Environment Victoria — New landfill levies (2010)', url: 'https://www.sustainabilitymatters.net.au/content/waste/news/new-landfill-levies-will-boost-recycling-and-ease-landfill-burden-48148413' },
+      { name: 'VLGA — Landfill levy rate rises deferred (2020)', url: 'https://www.vlga.org.au/sites/default/files/LANDFILL%20LEVY%20RATE%20RISES%20DEFERRED.pdf' },
+      { name: 'Cleanaway — The Victorian waste levy 2025', url: 'https://www.cleanaway.com.au/sustainable-future/vic-levy-ready25' },
+      { name: 'EPA Victoria — Waste levy', url: 'https://www.epa.vic.gov.au/node/43639' },
+    ],
+  },
+  {
+    id: 'sheet-weight',
+    title: 'What a sheet weighs',
+    statement:
+      'A 10 mm lightweight board is about 5.9 kg/m²; plasterboard generally runs 600–1,000 kg/m³, so 10 mm board is roughly 6–10 kg/m². We use 6.5 kg/m² as a working figure, so a standard 2,400 × 1,200 mm sheet (2.88 m²) is about 19 kg.',
+    kind: 'derived',
+    sources: [
+      { name: 'One Click LCA — Knauf Sheetrock One 10 mm (5.9 kg/m²)', url: 'https://materials.oneclicklca.com/en/material/gypsum-plasterboard/6740c6aa196fd92820d1bd3f' },
+      { name: 'British Gypsum — plasterboard density 600–1,000 kg/m³', url: 'https://www.british-gypsum.com/technical-support/self-help-tools/faqs/what-density-gyproc-plasterboards' },
+    ],
+  },
+  {
+    id: 'line-of-bins',
+    title: 'A year of plasterboard, in bins',
+    statement:
+      'At about 7 tonnes a bin, 100,000 tonnes is roughly 14,300 bin loads. Parked end to end at 6.3 m each, that is about 90 km of bins — further than the 70 km from Melbourne to Geelong.',
+    kind: 'derived',
+    sources: [
+      { name: 'CSIRO — Geelong is 70 km south-west of Melbourne', url: 'https://www.csiro.au/en/about/facilities-collections/acdp/about-acdp/visitor-information' },
+      { name: 'Starke Arvid — plasterboard chipper product sheet (density basis)', url: 'https://sitebox.ltd.uk/docs/starkearvid_37000/Plasterboard%20Chipper.pdf' },
+    ],
+  },
+  {
+    id: 'mcg',
+    title: 'A year of plasterboard, on the MCG',
+    statement:
+      'Stacked as sheets at about 700 kg/m³, 100,000 tonnes is roughly 143,000 m³. The MCG playing field is about 174 × 149 m, so around 20,000 m² — enough to bury the entire field about 7 m deep in plasterboard.',
+    kind: 'derived',
+    sources: [
+      { name: 'Melbourne Cricket Ground — Wikipedia (field 174 m × 149 m)', url: 'https://en.wikipedia.org/wiki/Melbourne_Cricket_Ground' },
+      { name: 'British Gypsum — plasterboard density 600–1,000 kg/m³', url: 'https://www.british-gypsum.com/technical-support/self-help-tools/faqs/what-density-gyproc-plasterboards' },
+    ],
+  },
+  {
+    id: 'gypsum-cycle',
+    title: 'Why gypsum can be recycled again and again',
+    statement:
+      'Gypsum is calcium sulphate dihydrate (CaSO₄·2H₂O). Heating drives off most of the water to make plaster; adding water back sets it hard again. Because the reaction is reversible, recovered gypsum can go round the loop repeatedly.',
+    kind: 'reported',
+    sources: [
+      { name: 'Life cycle energy and material flow implications of gypsum plasterboard recycling in the EU', url: 'https://eta-publications.lbl.gov/publications/life-cycle-energy-and-material-flow' },
+    ],
+  },
 ];
 
 export const factById = (id: string) => FACTS.find((f) => f.id === id);

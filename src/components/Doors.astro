@@ -1,0 +1,30 @@
+---
+/** Two audiences, two doors. */
+import { href } from '../data/site';
+---
+<div class="doors">
+  <a class="door" href={href('/councils/')}>
+    <img src={href('/images/3d/hook.webp')} width="1431" height="967" alt="" loading="lazy" />
+    <span class="door__k">Councils and transfer stations</span>
+    <span class="door__t">A bin by the gate. Plasterboard leaves as a recyclable, not as levy.</span>
+    <span class="door__go">What it saves your site</span>
+  </a>
+  <a class="door" href={href('/builders/')}>
+    <img src={href('/images/3d/side-open.webp')} width="2128" height="757" alt="" loading="lazy" />
+    <span class="door__k">Builders and sites</span>
+    <span class="door__t">Offcuts into the blue bin as you go. One line in the waste plan, sorted.</span>
+    <span class="door__go">How it works on site</span>
+  </a>
+</div>
+
+<style>
+  .doors { display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+  @media (min-width: 760px) { .doors { grid-template-columns: 1fr 1fr; } }
+  .door { display: grid; grid-template-rows: auto 1fr auto; gap: 0.35rem; background: var(--paper); border-radius: var(--radius-m); padding: clamp(1.25rem, 3vw, 2rem); text-decoration: none; color: var(--ink); border: 1px solid var(--rule); transition: border-color 0.15s, transform 0.15s; }
+  .door:hover { border-color: var(--steel); }
+  .door img { height: 9rem; width: 100%; object-fit: contain; margin-bottom: 0.75rem; }
+  .door__k { font: 800 var(--step-1) var(--font-display); color: var(--navy); line-height: 1.2; }
+  .door__t { color: var(--muted); }
+  .door__go { margin-top: 0.75rem; font-weight: 700; color: var(--steel-deep); }
+  .door:hover .door__go { text-decoration: underline; }
+</style>

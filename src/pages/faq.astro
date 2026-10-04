@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { FAQ } from '../data/faq';
+import { href } from '../data/site';
+const links: Record<string, string> = { BOOK: href('/book/'), WHATGOESIN: href('/what-goes-in/'), LEVY: href('/levy/'), FACTS: href('/facts/') };
+const render = (q: typeof FAQ[number]) => '<p>' + (q.html || q.a).replace(/href="([A-Z]+)"/g, (_, k) => `href="${links[k]}"`) + '</p>';
+const groups = [...new Set(FAQ.map((q) => q.group))];
+const ld = {
+  '@context': 'https://schema.org', '@type': 'FAQPage',
+  mainEntity: FAQ.map((q) => ({ '@type': 'Question', name: q.q, acceptedAnswer: { '@type': 'Answer', text: q.a } })),
+};
+---
+<Base title="Questions" description="Everything people ask about the Plastercycle bin: the service, the bin, what goes in, where it goes and the landfill levy." ld={ld}>
+  <section class="page-head">
+    <div class="wrap">
+      <p class="crumb"><a href={href('/')}>Home</a> / Questions</p>
+      <h1>Questions, answered.</h1>
+      <p>If yours isn’t here, <a href={href('/book/')}>ask us</a>.</p>
+    </div>
+  </section>
+  <section class="section" style="padding-top:0">
+    <div class="wrap faqp">
+      <nav class="faqp__nav" aria-label="Question groups">
+        <ul>{groups.map((g) => <li><a href={`#${g.toLowerCase().replace(/\s+/g, '-')}`}>{g}</a></li>)}</ul>
+      </nav>
+      <div class="faqp__body">
+        {groups.map((g) => (
+          <section id={g.toLowerCase().replace(/\s+/g, '-')} class="faqp__group">
+            <h2>{g}</h2>
+            <Faq items={FAQ.filter((q) => q.group === g).map((q) => ({ q: q.q, a: render(q) }))} />
+          </section>
+        ))}
+      </div>
+    </div>
+  </section>
+  <CtaBand />
+</Base>
+
+<style>
+  .faqp { display: grid; gap: 2rem; grid-template-columns: 1fr; }
+  @media (min-width: 900px) { .faqp { grid-template-columns: 14rem 1fr; } .faqp__nav { position: sticky; top: 6rem; align-self: start; } }
+  .faqp__nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  @media (min-width: 900px) { .faqp__nav ul { flex-direction: column; } }
+  .faqp__nav a { display: inline-block; padding: 0.5rem 0.8rem; border-radius: 999px; background: var(--paper); color: var(--navy); text-decoration: none; font-weight: 600; font-size: 0.92rem; border: 1px solid var(--rule); }
+  .faqp__nav a:hover { border-color: var(--steel); }
+  .faqp__group { margin-bottom: 2.5rem; scroll-margin-top: 6rem; }
+  .faqp__group h2 { font-size: var(--step-2); }
+</style>

@@ -1,21 +1,22 @@
 ---
 import Base from '../layouts/Base.astro';
 import BinDrawing from '../components/BinDrawing.astro';
+import Bin3D from '../components/Bin3D.astro';
 import CtaBand from '../components/CtaBand.astro';
 import { href, BIN } from '../data/site';
 const views = [
-  { id: 'front', label: 'Hook end', img: '/images/bin-front.webp', w: 482, h: 447,
-    alt: 'Front of the bin showing the A-frame and lifting hook',
-    cap: 'The A-frame and hook a hook-lift truck uses to drag the bin on and off.' },
-  { id: 'rear', label: 'Rear door', img: '/images/bin-rear.webp', w: 369, h: 374,
-    alt: 'Rear of the bin: a full-width, full-height solid door with a latch',
-    cap: 'A full-width, full-height solid door with a latch. The load tips out here.' },
-  { id: 'inside', label: 'Inside', img: '/images/bin-interior.webp', w: 593, h: 384,
-    alt: 'Inside the bin: smooth sheeted walls, floor and roof with gas struts on the panels',
-    cap: 'Every internal surface is sheeted smooth, so board doesn’t snag on ribs or beams when the bin is tipped.' },
+  { id: 'closed', label: 'Side, shut', img: '/images/3d/side-closed.webp', w: 2035, h: 757,
+    alt: 'Side of the bin with the loading panels shut', cap: 'Panels down and latched. The roof and panels keep the weather off the load between drops.' },
+  { id: 'open', label: 'Side, open', img: '/images/3d/side-open.webp', w: 2128, h: 757,
+    alt: 'Side of the bin with both top-hinged panels lifted', cap: 'Both top-hinged panels up. Sheets go in through the openings, which start about a metre off the ground.' },
+  { id: 'front', label: 'Hook end', img: '/images/3d/hook.webp', w: 1431, h: 967,
+    alt: 'Front of the bin showing the A-frame and lifting hook', cap: 'The A-frame and hook a hook-lift truck uses to drag the bin on and off.' },
+  { id: 'rear', label: 'Rear door', img: '/images/3d/rear-open.webp', w: 1577, h: 1011,
+    alt: 'Rear of the bin with the full-height door swung open', cap: 'A full-width, full-height solid door with a latch. The load tips out here.' },
+  { id: 'inside', label: 'Inside', img: '/images/3d/inside.webp', w: 2128, h: 1130,
+    alt: 'Inside the bin: smooth sheeted walls, floor and roof', cap: 'Every internal surface is sheeted smooth, so board doesn’t snag on ribs or beams when the bin is tipped.' },
   { id: 'hinge', label: 'Panel hinge', img: '/images/bin-hinge.webp', w: 295, h: 269,
-    alt: 'Close-up of a top hinge bracket and gas strut on a side panel',
-    cap: 'Each panel hangs from a top hinge and is held open by a gas strut.' },
+    alt: 'Close-up of a top hinge bracket and gas strut on a side panel', cap: 'Each panel hangs from a top hinge and is held open by a gas strut.' },
 ];
 const fmt = (n: number) => n.toLocaleString('en-AU');
 const specs = [
@@ -42,12 +43,21 @@ const specs = [
   </section>
 
   <section class="section" style="padding-top:0">
-    <div class="wrap"><BinDrawing start="closed" id="bin-main" /></div>
+    <div class="wrap">
+      <Bin3D id="bin-3d" autoOpen={false} />
+    </div>
   </section>
 
   <section class="section section--paper">
     <div class="wrap">
-      <h2>The other three sides, and inside</h2>
+      <h2>The drawing</h2>
+      <BinDrawing start="closed" id="bin-main" />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2>Every side of it</h2>
       <div class="views" data-views>
         <div class="views__tabs" role="tablist" aria-label="Bin views">
           {views.map((v, i) => (
@@ -64,11 +74,11 @@ const specs = [
     </div>
   </section>
 
-  <section class="section">
+  <section class="section section--paper">
     <div class="wrap grid-2">
       <div>
         <h2>Specifications</h2>
-        <p>From the fabrication drawings. The bin is built to suit the hook-lift trucks we already run.</p>
+        <p>From the fabrication drawings. The bin is built to suit the hook-lift trucks we already run. Hook height and rail width are matched to the truck before fabrication.</p>
       </div>
       <table class="spec">
         <caption class="visually-hidden">Bin specifications</caption>

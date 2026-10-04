@@ -1,58 +1,94 @@
 ---
 import Base from '../layouts/Base.astro';
 import { href, ENQUIRY_EMAIL } from '../data/site';
+import { LEVIES } from '../data/levies';
 ---
 <Base title="Book a bin" description="Tell us about your transfer station, depot or site and we’ll come back with a plan and a quote for a Plastercycle bin.">
   <section class="page-head">
     <div class="wrap">
       <p class="crumb"><a href={href('/')}>Home</a> / Book a bin</p>
       <h1>Book a bin.</h1>
-      <p>Tell us where the bin would go and roughly how much plasterboard you see. We’ll come back to you with a plan and a quote.</p>
+      <p>Four short steps. We’ll come back to you with a plan and a quote.</p>
     </div>
   </section>
 
   <section class="section" style="padding-top:0">
     <div class="wrap book">
-      <form class="form" id="book-form" action={`mailto:${ENQUIRY_EMAIL}`} method="post" enctype="text/plain" data-to={ENQUIRY_EMAIL} novalidate>
-        <div class="form__grid">
-          <div class="f"><label for="f-name">Your name</label><input id="f-name" name="Name" autocomplete="name" required /></div>
-          <div class="f"><label for="f-org">Organisation</label><input id="f-org" name="Organisation" autocomplete="organization" required /></div>
-          <div class="f"><label for="f-email">Email</label><input id="f-email" name="Email" type="email" autocomplete="email" required /></div>
-          <div class="f"><label for="f-phone">Phone <span class="opt">(optional)</span></label><input id="f-phone" name="Phone" type="tel" autocomplete="tel" /></div>
-          <div class="f f--full">
-            <label for="f-type">Where would the bin go?</label>
-            <select id="f-type" name="Site type" required>
-              <option value="">Choose one</option>
-              <option>Council transfer station or resource recovery centre</option>
-              <option>Council depot</option>
-              <option>Private transfer station</option>
-              <option>Building or development site</option>
-              <option>Something else</option>
-            </select>
+      <form class="wiz" id="book-form" action={`mailto:${ENQUIRY_EMAIL}`} method="post" enctype="text/plain" data-to={ENQUIRY_EMAIL} novalidate>
+        <ol class="wiz__progress" aria-label="Progress">
+          <li data-step-dot="1" class="is-current"><span>1</span>Where</li>
+          <li data-step-dot="2"><span>2</span>How much</li>
+          <li data-step-dot="3"><span>3</span>Access</li>
+          <li data-step-dot="4"><span>4</span>You</li>
+        </ol>
+
+        <fieldset class="wiz__step" data-step="1">
+          <legend>Where would the bin go?</legend>
+          <div class="wiz__choices" role="radiogroup" aria-label="Site type">
+            {[
+              ['Council transfer station or resource recovery centre', 'Residents and trades drop off; staff at the gate'],
+              ['Council depot', 'Council crews only'],
+              ['Private transfer station', 'Commercial site'],
+              ['Building or development site', 'New build, fit-out or renovation'],
+              ['Something else', 'Tell us below'],
+            ].map(([v, d], i) => (
+              <label class="wiz__choice"><input type="radio" name="Site type" value={v} required={i === 0} /><span><strong>{v}</strong><small>{d}</small></span></label>
+            ))}
           </div>
-          <div class="f"><label for="f-loc">Suburb and state</label><input id="f-loc" name="Location" autocomplete="address-level2" required /></div>
-          <div class="f">
-            <label for="f-vol">Plasterboard a year, roughly</label>
-            <select id="f-vol" name="Volume">
-              <option>Not sure yet</option>
-              <option>Under 50 t</option>
-              <option>50–250 t</option>
-              <option>250–1,000 t</option>
-              <option>Over 1,000 t</option>
-            </select>
+          <div class="f f--half">
+            <label for="f-state">State</label>
+            <select id="f-state" name="State" required><option value="">Choose</option>{LEVIES.map((s) => <option>{s.name}</option>)}</select>
           </div>
-          <div class="f f--full"><label for="f-msg">Anything else we should know? <span class="opt">(optional)</span></label><textarea id="f-msg" name="Message" rows="4" placeholder="Access, opening hours, when you’d like to start"></textarea></div>
+          <div class="f"><label for="f-loc">Suburb or town</label><input id="f-loc" name="Location" autocomplete="address-level2" required /></div>
+        </fieldset>
+
+        <fieldset class="wiz__step" data-step="2" hidden>
+          <legend>How much plasterboard do you see?</legend>
+          <div class="wiz__choices" role="radiogroup" aria-label="Volume">
+            {[['Not sure yet', 'We’ll help you estimate'], ['Under 50 t a year', 'A bin every few months'], ['50–250 t a year', 'Roughly monthly'], ['250–1,000 t a year', 'Weekly to fortnightly'], ['Over 1,000 t a year', 'Several a week'], ['One job', 'A build or fit-out with a start and end']].map(([v, d]) => (
+              <label class="wiz__choice"><input type="radio" name="Volume" value={v} /><span><strong>{v}</strong><small>{d}</small></span></label>
+            ))}
+          </div>
+          <div class="f"><label for="f-start">When would you like to start? <span class="opt">(optional)</span></label><input id="f-start" name="Start" placeholder="e.g. next month, or a date" /></div>
+        </fieldset>
+
+        <fieldset class="wiz__step" data-step="3" hidden>
+          <legend>Getting the truck in</legend>
+          <p class="wiz__help">A hook-lift truck reverses up to the hook end to drop and lift the bin. Rough answers are fine — we confirm on site.</p>
+          <div class="wiz__choices wiz__choices--row" role="group" aria-label="Access">
+            <label class="wiz__choice"><input type="checkbox" name="Access: flat firm ground" value="yes" /><span><strong>Flat, firm ground for the bin</strong></span></label>
+            <label class="wiz__choice"><input type="checkbox" name="Access: straight run for a truck" value="yes" /><span><strong>A straight run up for a truck</strong></span></label>
+            <label class="wiz__choice"><input type="checkbox" name="Access: height clearance" value="yes" /><span><strong>No low wires or awnings over the spot</strong></span></label>
+            <label class="wiz__choice"><input type="checkbox" name="Access: staffed gate" value="yes" /><span><strong>Someone on site during opening hours</strong></span></label>
+          </div>
+          <div class="f"><label for="f-msg">Anything else about the site? <span class="opt">(optional)</span></label><textarea id="f-msg" name="Notes" rows="3" placeholder="Opening hours, gates, where you’d like it"></textarea></div>
+        </fieldset>
+
+        <fieldset class="wiz__step" data-step="4" hidden>
+          <legend>Where do we send the quote?</legend>
+          <div class="form__grid">
+            <div class="f"><label for="f-name">Your name</label><input id="f-name" name="Name" autocomplete="name" required /></div>
+            <div class="f"><label for="f-org">Organisation</label><input id="f-org" name="Organisation" autocomplete="organization" required /></div>
+            <div class="f"><label for="f-email">Email</label><input id="f-email" name="Email" type="email" autocomplete="email" required /></div>
+            <div class="f"><label for="f-phone">Phone <span class="opt">(optional)</span></label><input id="f-phone" name="Phone" type="tel" autocomplete="tel" /></div>
+          </div>
+          <div class="wiz__review" data-review></div>
+        </fieldset>
+
+        <p class="form__err" role="alert" hidden>Fill in the highlighted fields to continue.</p>
+        <div class="wiz__nav">
+          <button type="button" class="btn btn--ghost" data-prev hidden>Back</button>
+          <button type="button" class="btn btn--primary" data-next>Continue</button>
+          <button type="submit" class="btn btn--primary" data-submit hidden>Book a bin</button>
         </div>
-        <p class="form__err" role="alert" hidden>Fill in the highlighted fields, then press Book a bin again.</p>
-        <button class="btn btn--primary" type="submit">Book a bin</button>
-        <p class="form__how">This opens your email app with your details filled in, addressed to us. Press send to finish.</p>
+        <p class="form__how">The last step opens your email app with your answers filled in, addressed to us. Press send to finish.</p>
       </form>
 
       <div class="form__done" id="book-done" hidden tabindex="-1">
         <h2>Nearly done — press send in your email.</h2>
         <p>Your email app should have opened with your request filled in. Send it and we’ll be in touch.</p>
         <p>Nothing opened? Email the same details to <a href={`mailto:${ENQUIRY_EMAIL}`}>{ENQUIRY_EMAIL}</a>.</p>
-        <button class="btn btn--ghost" type="button" id="book-again">Edit my details</button>
+        <button class="btn btn--ghost" type="button" id="book-again">Edit my answers</button>
       </div>
 
       <aside class="book__aside">
@@ -71,50 +107,97 @@ import { href, ENQUIRY_EMAIL } from '../data/site';
 <script>
   const form = document.getElementById('book-form') as HTMLFormElement | null;
   const done = document.getElementById('book-done');
-  const err = form?.querySelector<HTMLElement>('.form__err');
-  form?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    let ok = true;
-    form.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[required]').forEach((el) => {
-      const bad = !el.value.trim() || (el.type === 'email' && !/^\S+@\S+\.\S+$/.test(el.value));
-      el.setAttribute('aria-invalid', String(bad));
-      if (bad) ok = false;
+  if (form) {
+    const steps = Array.from(form.querySelectorAll<HTMLFieldSetElement>('[data-step]'));
+    const dots = Array.from(form.querySelectorAll<HTMLElement>('[data-step-dot]'));
+    const prev = form.querySelector<HTMLButtonElement>('[data-prev]')!, next = form.querySelector<HTMLButtonElement>('[data-next]')!, submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const err = form.querySelector<HTMLElement>('.form__err')!;
+    const review = form.querySelector<HTMLElement>('[data-review]')!;
+    let i = 0;
+    const validate = (fs: HTMLFieldSetElement) => {
+      let ok = true;
+      const radios = fs.querySelector<HTMLInputElement>('input[type=radio][required]');
+      if (radios && !fs.querySelector('input[type=radio]:checked')) { ok = false; fs.querySelector('.wiz__choices')?.classList.add('is-bad'); } else fs.querySelector('.wiz__choices')?.classList.remove('is-bad');
+      fs.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input:not([type=radio]):not([type=checkbox])[required], select[required]').forEach((el) => {
+        const bad = !el.value.trim() || (el.type === 'email' && !/^\S+@\S+\.\S+$/.test(el.value));
+        el.setAttribute('aria-invalid', String(bad)); if (bad) ok = false;
+      });
+      return ok;
+    };
+    const show = (n: number) => {
+      i = n;
+      steps.forEach((s, k) => { s.hidden = k !== n; });
+      dots.forEach((d, k) => { d.classList.toggle('is-current', k === n); d.classList.toggle('is-done', k < n); });
+      prev.hidden = n === 0; next.hidden = n === steps.length - 1; submit.hidden = n !== steps.length - 1;
+      err.hidden = true;
+      if (n === steps.length - 1) {
+        const data = new FormData(form); const rows: string[] = [];
+        data.forEach((v, k) => { if (String(v).trim() && !['Name', 'Organisation', 'Email', 'Phone'].includes(k)) rows.push(`<div><dt>${k.replace('Access: ', 'Access — ')}</dt><dd>${String(v)}</dd></div>`); });
+        review.innerHTML = rows.length ? `<h3>Your answers</h3><dl>${rows.join('')}</dl>` : '';
+      }
+      steps[n].querySelector<HTMLElement>('input, select, textarea')?.focus({ preventScroll: true });
+      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    next.addEventListener('click', () => { if (validate(steps[i])) show(i + 1); else { err.hidden = false; } });
+    prev.addEventListener('click', () => show(i - 1));
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validate(steps[i])) { err.hidden = false; return; }
+      const data = new FormData(form); const lines: string[] = [];
+      data.forEach((v, k) => { if (String(v).trim()) lines.push(`${k}: ${v}`); });
+      const subject = `Plastercycle bin request — ${data.get('Organisation')}`;
+      const body = `${lines.join('\n')}\n\nSent from plastercycle.com`;
+      window.location.href = `mailto:${form.dataset.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      form.hidden = true; if (done) { done.hidden = false; done.focus(); }
     });
-    if (!ok) { err!.hidden = false; form.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus(); return; }
-    err!.hidden = true;
-    const data = new FormData(form);
-    const lines: string[] = [];
-    data.forEach((v, k) => { if (String(v).trim()) lines.push(`${k}: ${v}`); });
-    const subject = `Plastercycle bin request — ${data.get('Organisation')}`;
-    const body = `${lines.join('\n')}\n\nSent from plastercycle.com`;
-    window.location.href = `mailto:${form.dataset.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    form.hidden = true;
-    if (done) { done.hidden = false; done.focus(); }
-  });
-  document.getElementById('book-again')?.addEventListener('click', () => {
-    if (form && done) { done.hidden = true; form.hidden = false; form.querySelector<HTMLElement>('input')?.focus(); }
-  });
+    document.getElementById('book-again')?.addEventListener('click', () => { if (done) { done.hidden = true; form.hidden = false; show(0); } });
+    show(0);
+  }
 </script>
 
 <style>
   .book { display: grid; gap: clamp(2rem, 5vw, 4rem); grid-template-columns: 1fr; align-items: start; }
   @media (min-width: 960px) { .book { grid-template-columns: 1.7fr 1fr; } .book__aside { grid-column: 2; grid-row: 1; } }
-  .form, .form__done { background: var(--paper); border-radius: var(--radius-m); padding: clamp(1.25rem, 3.5vw, 2.25rem); border: 1px solid var(--rule); }
+  .wiz, .form__done { background: var(--paper); border-radius: var(--radius-m); padding: clamp(1.25rem, 3.5vw, 2.25rem); border: 1px solid var(--rule); scroll-margin-top: 5rem; }
+  .wiz__progress { list-style: none; margin: 0 0 1.75rem; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; }
+  .wiz__progress li { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; font-weight: 600; color: var(--muted); border-top: 3px solid var(--rule); padding-top: 0.5rem; }
+  .wiz__progress li span { display: inline-grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--rule); color: var(--navy); font: 800 0.8rem var(--font-display); }
+  .wiz__progress li.is-current { color: var(--navy); border-top-color: var(--steel); } .wiz__progress li.is-current span { background: var(--steel); color: #fff; }
+  .wiz__progress li.is-done { border-top-color: var(--green); } .wiz__progress li.is-done span { background: var(--green); color: #fff; }
+  .wiz__step { border: 0; margin: 0; padding: 0; min-width: 0; }
+  .wiz__step legend { font: 800 var(--step-2) var(--font-display); color: var(--navy); margin-bottom: 1rem; padding: 0; letter-spacing: -0.02em; }
+  .wiz__help { color: var(--muted); margin-bottom: 1rem; }
+  .wiz__choices { display: grid; gap: 0.6rem; margin-bottom: 1.25rem; border-radius: var(--radius-s); }
+  .wiz__choices.is-bad { outline: 2px solid var(--danger); outline-offset: 6px; }
+  .wiz__choices--row { grid-template-columns: 1fr; }
+  @media (min-width: 640px) { .wiz__choices--row { grid-template-columns: 1fr 1fr; } }
+  .wiz__choice { display: block; cursor: pointer; }
+  .wiz__choice input { position: absolute; opacity: 0; pointer-events: none; }
+  .wiz__choice span { display: grid; gap: 0.1rem; border: 2px solid var(--rule-strong); border-radius: var(--radius-s); padding: 0.75rem 0.95rem; min-height: 3rem; }
+  .wiz__choice strong { color: var(--ink); font-weight: 600; } .wiz__choice small { color: var(--muted); font-size: 0.85rem; }
+  .wiz__choice input:checked + span { border-color: var(--steel); background: #eaf1fc; } .wiz__choice input:checked + span strong { color: var(--navy); }
+  .wiz__choice input:focus-visible + span { outline: 3px solid var(--green); outline-offset: 2px; }
   .form__grid { display: grid; gap: 1.25rem; grid-template-columns: 1fr; margin-bottom: 1.5rem; }
-  @media (min-width: 640px) { .form__grid { grid-template-columns: 1fr 1fr; } .f--full { grid-column: 1 / -1; } }
+  @media (min-width: 640px) { .form__grid { grid-template-columns: 1fr 1fr; } }
+  .f { margin-bottom: 1.1rem; } .f--half { max-width: 20rem; }
   .f label { display: block; font-weight: 600; color: var(--navy); margin-bottom: 0.4rem; }
   .opt { font-weight: 400; color: var(--muted); }
-  .f input, .f select, .f textarea {
-    width: 100%; font: 400 1rem var(--font-body); color: var(--ink); background: #fff;
-    border: 2px solid var(--rule-strong); border-radius: var(--radius-s); padding: 0.7rem 0.8rem; min-height: 3rem;
-  }
+  .f input, .f select, .f textarea { width: 100%; font: 400 1rem var(--font-body); color: var(--ink); background: #fff; border: 2px solid var(--rule-strong); border-radius: var(--radius-s); padding: 0.7rem 0.8rem; min-height: 3rem; }
   .f input:focus, .f select:focus, .f textarea:focus { outline: none; border-color: var(--steel); box-shadow: 0 0 0 3px rgba(44,102,208,0.2); }
   .f [aria-invalid='true'] { border-color: var(--danger); background: #fdf3f1; }
+  .wiz__review h3 { font-size: 1rem; margin: 0.5rem 0 0.5rem; }
+  .wiz__review dl { margin: 0 0 1rem; display: grid; gap: 0.35rem; font-size: 0.92rem; }
+  .wiz__review dl div { display: grid; grid-template-columns: 10rem 1fr; gap: 0.75rem; }
+  .wiz__review dt { color: var(--muted); } .wiz__review dd { margin: 0; }
   .form__err { color: var(--danger); font-weight: 600; }
-  @media (max-width: 600px) { .form button[type='submit'] { width: 100%; min-height: 3.25rem; font-size: 1.0625rem; } .form, .form__done { padding: 1.25rem 1rem; } }
+  .wiz__nav { display: flex; gap: 0.75rem; flex-wrap: wrap; }
   .form__how { color: var(--muted); font-size: 0.9rem; margin: 0.9rem 0 0; }
   .form__done h2 { font-size: var(--step-2); }
   .book__aside h2 { font-size: var(--step-1); }
-  .book__aside ol { padding-left: 1.2rem; margin: 0 0 1.5rem; }
-  .book__aside li { margin-bottom: 0.6rem; }
+  .book__aside ol { padding-left: 1.2rem; margin: 0 0 1.5rem; } .book__aside li { margin-bottom: 0.6rem; }
+  @media (max-width: 600px) {
+    .wiz__nav .btn { flex: 1; min-height: 3.25rem; }
+    .wiz__progress li { font-size: 0; gap: 0; justify-content: center; } .wiz__progress li span { font-size: 0.8rem; }
+    .wiz__review dl div { grid-template-columns: 1fr; gap: 0.1rem; }
+  }
 </style>
