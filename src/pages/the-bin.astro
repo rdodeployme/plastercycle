@@ -1,0 +1,125 @@
+---
+import Base from '../layouts/Base.astro';
+import BinDrawing from '../components/BinDrawing.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { href, BIN } from '../data/site';
+const views = [
+  { id: 'front', label: 'Hook end', img: '/images/bin-front.webp', w: 482, h: 447,
+    alt: 'Front of the bin showing the A-frame and lifting hook',
+    cap: 'The A-frame and hook a hook-lift truck uses to drag the bin on and off.' },
+  { id: 'rear', label: 'Rear door', img: '/images/bin-rear.webp', w: 369, h: 374,
+    alt: 'Rear of the bin: a full-width, full-height solid door with a latch',
+    cap: 'A full-width, full-height solid door with a latch. The load tips out here.' },
+  { id: 'inside', label: 'Inside', img: '/images/bin-interior.webp', w: 593, h: 384,
+    alt: 'Inside the bin: smooth sheeted walls, floor and roof with gas struts on the panels',
+    cap: 'Every internal surface is sheeted smooth, so board doesn’t snag on ribs or beams when the bin is tipped.' },
+  { id: 'hinge', label: 'Panel hinge', img: '/images/bin-hinge.webp', w: 295, h: 269,
+    alt: 'Close-up of a top hinge bracket and gas strut on a side panel',
+    cap: 'Each panel hangs from a top hinge and is held open by a gas strut.' },
+];
+const fmt = (n: number) => n.toLocaleString('en-AU');
+const specs = [
+  ['Overall length', `${fmt(BIN.length)} mm`],
+  ['Overall width', `${fmt(BIN.width)} mm`],
+  ['Overall height', `${fmt(BIN.height)} mm`],
+  ['Loading opening', `Starts about ${fmt(BIN.sill)} mm off the ground`],
+  ['Side panels', 'Two, hinged at the top, opening in the middle'],
+  ['Rear door', 'Full width, full height, solid'],
+  ['Roof', 'Fully enclosed and weatherproof'],
+  ['Inside', 'Fully sheeted and smooth'],
+  ['Volume', `About ${BIN.volume} m³ overall`],
+  ['Lifting', 'Hook-lift'],
+  ['Build', 'Heavy-duty steel, weather-resistant paint, Plastercycle blue'],
+];
+---
+<Base title="The bin" description="An enclosed, hook-lift plasterboard bin: 6.3 m long, top-hinged side loading panels, weatherproof roof and smooth sheeted interior.">
+  <section class="page-head">
+    <div class="wrap">
+      <p class="crumb"><a href={href('/')}>Home</a> / The bin</p>
+      <h1>Built around one material.</h1>
+      <p>Plasterboard is heavy, awkward and ruined by rain. So the bin loads from the side at waist height, closes up completely, and tips out clean.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap"><BinDrawing start="closed" id="bin-main" /></div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="wrap">
+      <h2>The other three sides, and inside</h2>
+      <div class="views" data-views>
+        <div class="views__tabs" role="tablist" aria-label="Bin views">
+          {views.map((v, i) => (
+            <button role="tab" type="button" id={`tab-${v.id}`} aria-controls={`panel-${v.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>{v.label}</button>
+          ))}
+        </div>
+        {views.map((v, i) => (
+          <div class="views__panel" role="tabpanel" id={`panel-${v.id}`} aria-labelledby={`tab-${v.id}`} hidden={i !== 0}>
+            <div class="views__img"><img src={href(v.img)} width={v.w} height={v.h} alt={v.alt} loading={i === 0 ? 'eager' : 'lazy'} /></div>
+            <p class="views__cap">{v.cap}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap grid-2">
+      <div>
+        <h2>Specifications</h2>
+        <p>From the fabrication drawings. The bin is built to suit the hook-lift trucks we already run.</p>
+      </div>
+      <table class="spec">
+        <caption class="visually-hidden">Bin specifications</caption>
+        <tbody>
+          {specs.map(([k, v]) => <tr><th scope="row">{k}</th><td>{v}</td></tr>)}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <CtaBand title="Want one on your site?" />
+</Base>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-views]').forEach((root) => {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const select = (t: HTMLButtonElement) => {
+      tabs.forEach((x) => {
+        const on = x === t;
+        x.setAttribute('aria-selected', String(on));
+        x.tabIndex = on ? 0 : -1;
+        const p = document.getElementById(x.getAttribute('aria-controls')!);
+        if (p) p.hidden = !on;
+      });
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(t));
+      t.addEventListener('keydown', (e) => {
+        const k = e.key;
+        if (k !== 'ArrowRight' && k !== 'ArrowLeft') return;
+        e.preventDefault();
+        const n = tabs[(i + (k === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length];
+        select(n); n.focus();
+      });
+    });
+  });
+</script>
+
+<style>
+  .views__tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.5rem 0 1.75rem; }
+  .views__tabs button {
+    font: 600 0.95rem var(--font-body); color: var(--navy); background: var(--chalk);
+    border: 2px solid transparent; border-radius: 999px; padding: 0.55rem 1.1rem; min-height: 2.75rem; cursor: pointer;
+  }
+  .views__tabs button:hover { border-color: var(--rule-strong); }
+  .views__tabs button[aria-selected='true'] { background: var(--navy); color: #fff; }
+  .views__img { background: var(--chalk); border-radius: var(--radius-m); display: grid; place-items: center; padding: clamp(1rem, 4vw, 3rem); min-height: clamp(240px, 38vw, 460px); }
+  .views__img img { max-height: clamp(200px, 30vw, 360px); width: auto; object-fit: contain; }
+  .views__cap { margin-top: 1rem; font-size: var(--step-1); color: var(--ink); }
+  .spec { width: 100%; border-collapse: collapse; background: var(--paper); border-radius: var(--radius-m); overflow: hidden; }
+  .spec th, .spec td { text-align: left; padding: 0.85rem 1rem; border-bottom: 1px solid var(--chalk); vertical-align: top; }
+  .spec th { font-weight: 600; color: var(--navy); width: 40%; }
+  .spec tr:last-child th, .spec tr:last-child td { border-bottom: 0; }
+</style>

@@ -1,0 +1,66 @@
+---
+import Base from '../layouts/Base.astro';
+import Calculator from '../components/Calculator.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Cite from '../components/Cite.astro';
+import { href } from '../data/site';
+import { LEVY_METRO, LEVY } from '../data/facts';
+const faq = [
+  { q: 'Does the levy really apply to plasterboard?', a: '<p>Yes. Plasterboard sent to landfill is charged the waste levy by the tonne like any other waste. When a transfer station sends it on, it’s classed as industrial waste.</p>' },
+  { q: 'Where do the levy figures come from?', a: `<p>EPA Victoria sets the levy in fee units: 10.26 a tonne for metropolitan landfills and 9.03 for rural industrial waste in 2026–27. A fee unit is $${LEVY.feeUnit2026} this year. <a href="${href('/facts/#levy')}">Sources</a>.</p>` },
+  { q: 'We’re not in Victoria. Does this still work?', a: '<p>Every state charges for landfill, just at different rates. Put your own gate fee and levy into the “gate fee” box and set the tonnes — the maths is the same. Then tell us where you are.</p>' },
+  { q: 'What do residents need to do?', a: '<p>Bring plasterboard separately from the rest of their load, and keep fibro out. Clear signage at the bin and a quick look at each load at the gate do most of the work.</p>' },
+  { q: 'Can we run a trial first?', a: `<p>Ask us. <a href="${href('/book/')}">Tell us about your site</a> and how much board you see, and we’ll work out a sensible starting point.</p>` },
+];
+---
+<Base title="For councils and transfer stations" description="Keep plasterboard out of landfill and out of the levy. Work out what a dedicated Plastercycle bin saves your transfer station.">
+  <section class="page-head">
+    <div class="wrap">
+      <p class="crumb"><a href={href('/')}>Home</a> / Councils and transfer stations</p>
+      <h1>Plasterboard is costing you by the tonne.</h1>
+      <p>In metropolitan Victoria, every tonne that goes to landfill attracts ${LEVY_METRO.toFixed(2)} in state levy in 2026–27, before the gate fee.<Cite id="levy" /> Give it its own bin and it leaves your site as a recyclable instead.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <Calculator />
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="wrap grid-2">
+      <div>
+        <h2>Why it’s worth separating</h2>
+        <h3>It keeps a problem material out of the cell</h3>
+        <p>Buried with food and garden waste, gypsum can break down into hydrogen sulphide, a toxic gas that smells of rotten eggs. In Europe, gypsum waste is only allowed into landfill cells that take no biodegradable waste.<Cite id="h2s" /></p>
+        <h3>It’s one of the most recoverable things you take in</h3>
+        <p>Around 94% of a sheet is gypsum, and recovered gypsum goes back into new plasterboard, cement and soil conditioner.<Cite id="uses" /></p>
+        <h3>It’s already arriving separately</h3>
+        <p>Builders and renovators turn up with loads that are mostly board. A bin by the gate lets them drop it straight in.</p>
+      </div>
+      <div>
+        <h2>What you need</h2>
+        <ul class="needs">
+          <li><strong>A flat, firm spot</strong> for a 6.3 m × 2.45 m bin, with room in front for a hook-lift truck to reverse up.</li>
+          <li><strong>Someone at the gate</strong> to point plasterboard to the bin and keep fibro out.</li>
+          <li><strong>A call when it’s full.</strong> We collect it and take it away to be recycled.</li>
+        </ul>
+        <h2 class="faq-h">Questions</h2>
+        <Faq items={faq} />
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .needs { list-style: none; margin: 0 0 2.5rem; padding: 0; }
+  .needs li { padding: 1rem 0 1rem 1.25rem; border-bottom: 1px solid var(--rule); position: relative; }
+  .needs li::before { content: ''; position: absolute; left: 0; top: 1.55rem; width: 8px; height: 8px; background: var(--green); border-radius: 2px; }
+  .needs strong { color: var(--navy); }
+  .faq-h { margin-top: 1rem; }
+  h3 { margin-top: 1.5rem; }
+</style>

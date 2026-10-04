@@ -1,0 +1,40 @@
+---
+import Logo from './Logo.astro';
+import { NAV, CTA, SITE, href } from '../data/site';
+const year = new Date().getFullYear();
+---
+<footer class="ftr">
+  <div class="wrap ftr__in">
+    <div class="ftr__brand">
+      <Logo variant="reverse" />
+      <p>Enclosed bins for plasterboard at councils, transfer stations and building sites. Collected on our hook-lift trucks and sent to be recycled.</p>
+    </div>
+    <nav aria-label="Footer">
+      <ul>
+        {NAV.map((n) => <li><a href={href(n.href)}>{n.label}</a></li>)}
+        <li><a href={href('/facts/')}>Facts and sources</a></li>
+        <li><a href={href(CTA.href)}>{CTA.label}</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="wrap ftr__base">
+    <span>© {year} {SITE.name}</span>
+    <span>{SITE.domain}</span>
+  </div>
+</footer>
+
+<style>
+  .ftr { background: var(--navy); color: #d9e2f2; padding-top: clamp(3rem, 6vw, 4.5rem); }
+  .ftr__in { display: grid; gap: 2.5rem; grid-template-columns: 1fr; padding-bottom: 2.5rem; }
+  @media (min-width: 800px) { .ftr__in { grid-template-columns: 1.3fr 1fr; } }
+  .ftr__brand :global(.logo) { font-size: 17px; margin-bottom: 1.25rem; }
+  .ftr__brand p { color: #c3cfe6; max-width: 30rem; }
+  .ftr ul { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: 2rem; }
+  .ftr li { break-inside: avoid; }
+  .ftr a { color: #fff; text-decoration: none; display: inline-block; padding: 0.35rem 0; }
+  .ftr a:hover { color: var(--green); text-decoration: underline; }
+  .ftr__base {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem;
+    border-top: 1px solid rgba(255,255,255,0.18); padding-block: 1.25rem; font-size: var(--step--1); color: #a9b8d6;
+  }
+</style>

@@ -1,0 +1,9 @@
+---
+import { factById } from '../data/facts';
+import { href } from '../data/site';
+interface Props { id: string; label?: string }
+const { id, label } = Astro.props;
+const fact = factById(id);
+if (!fact) throw new Error(`Unknown fact id: ${id}`);
+---
+<a class="cite" href={href(`/facts/#${id}`)} title={fact.title}>{label ?? (fact.kind === 'derived' ? 'workings' : 'source')}</a>

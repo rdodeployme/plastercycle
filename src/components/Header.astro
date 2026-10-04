@@ -1,0 +1,70 @@
+---
+import Logo from './Logo.astro';
+import { NAV, CTA, href } from '../data/site';
+const path = Astro.url.pathname;
+---
+<header class="hdr">
+  <div class="wrap hdr__in">
+    <a href={href('/')} class="hdr__home" aria-label="Plastercycle home"><Logo /></a>
+    <button class="hdr__toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+      <span class="hdr__bars" aria-hidden="true"></span><span class="hdr__tlabel">Menu</span>
+    </button>
+    <nav id="site-nav" class="hdr__nav" aria-label="Main">
+      <ul>
+        {NAV.map((n) => (
+          <li><a href={href(n.href)} aria-current={path.startsWith(href(n.href)) ? 'page' : undefined}>{n.label}</a></li>
+        ))}
+      </ul>
+      <a class="btn btn--primary hdr__cta" href={href(CTA.href)}>{CTA.label}</a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('.hdr__toggle');
+  const nav = document.getElementById('site-nav');
+  btn?.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    nav?.classList.toggle('is-open', !open);
+    document.body.classList.toggle('nav-open', !open);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && nav?.classList.contains('is-open')) btn?.click();
+  });
+</script>
+
+<style>
+  .hdr { background: var(--paper); border-bottom: 1px solid var(--rule); position: sticky; top: 0; z-index: 40; }
+  .hdr__in { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 4.5rem; }
+  .hdr__home { text-decoration: none; font-size: 15px; display: inline-flex; padding-block: 0.6rem; }
+  .hdr__nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 0.25rem; }
+  .hdr__nav a:not(.btn) {
+    display: block; padding: 0.55rem 0.7rem; border-radius: var(--radius-s);
+    color: var(--ink); text-decoration: none; font-weight: 500; font-size: 0.95rem;
+  }
+  .hdr__nav a:not(.btn):hover { background: var(--chalk); color: var(--navy); }
+  .hdr__nav a[aria-current='page'] { color: var(--navy); box-shadow: inset 0 -2px 0 var(--steel); border-radius: 0; }
+  .hdr__nav { display: flex; align-items: center; gap: 1rem; }
+  .hdr__cta { min-height: 2.75rem; padding-block: 0.55rem; }
+  .hdr__toggle {
+    display: none; align-items: center; gap: 0.5rem; background: none; border: 1px solid var(--rule);
+    border-radius: var(--radius-s); padding: 0.6rem 0.85rem; font: 600 0.95rem var(--font-body); color: var(--navy); cursor: pointer;
+  }
+  .hdr__bars, .hdr__bars::before, .hdr__bars::after { display: block; width: 18px; height: 2px; background: currentColor; position: relative; }
+  .hdr__bars::before, .hdr__bars::after { content: ''; position: absolute; left: 0; }
+  .hdr__bars::before { top: -6px; } .hdr__bars::after { top: 6px; }
+
+  @media (max-width: 1100px) {
+    .hdr__toggle { display: inline-flex; }
+    .hdr__nav {
+      display: none; position: absolute; left: 0; right: 0; top: 100%;
+      background: var(--paper); border-bottom: 1px solid var(--rule);
+      flex-direction: column; align-items: stretch; padding: 0.75rem var(--gutter) 1.25rem;
+    }
+    .hdr__nav.is-open { display: flex; }
+    .hdr__nav ul { flex-direction: column; }
+    .hdr__nav a:not(.btn) { padding: 0.85rem 0.5rem; font-size: 1.05rem; border-bottom: 1px solid var(--chalk); }
+    .hdr__nav a[aria-current='page'] { box-shadow: inset 4px 0 0 var(--steel); padding-left: 0.9rem; }
+  }
+</style>

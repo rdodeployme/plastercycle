@@ -1,0 +1,131 @@
+---
+import Cite from './Cite.astro';
+import { LEVY_METRO, LEVY_RURAL } from '../data/facts';
+---
+<div class="calc" id="calculator" data-metro={LEVY_METRO} data-rural={LEVY_RURAL}>
+  <form class="calc__in" aria-label="Landfill levy savings calculator" onsubmit="return false">
+    <div class="calc__field">
+      <label for="c-t">Plasterboard coming through your site each year</label>
+      <div class="calc__tonnes">
+        <input id="c-t-range" type="range" min="10" max="3000" step="10" value="250" aria-label="Tonnes a year (slider)" />
+        <div class="calc__num"><input id="c-t" type="number" inputmode="numeric" min="0" max="100000" step="1" value="250" /><span>t / yr</span></div>
+      </div>
+      <p class="calc__hint">Not sure? Albury and Federation councils estimated about 1,000 t a year of builders’ offcuts alone.<Cite id="albury" /></p>
+    </div>
+
+    <fieldset class="calc__field">
+      <legend>Where your landfill is</legend>
+      <div class="calc__seg">
+        <label><input type="radio" name="zone" value="metro" checked /><span>Metropolitan Victoria<small>${LEVY_METRO.toFixed(2)} / t levy</small></span></label>
+        <label><input type="radio" name="zone" value="rural" /><span>Rural Victoria<small>${LEVY_RURAL.toFixed(2)} / t levy</small></span></label>
+      </div>
+      <p class="calc__hint">2026–27 levy on industrial waste — what a transfer station pays when it sends waste on to landfill.<Cite id="levy" /></p>
+    </fieldset>
+
+    <div class="calc__row2">
+      <div class="calc__field">
+        <label for="c-gate">Landfill gate fee, on top of the levy <span class="calc__opt">(optional)</span></label>
+        <div class="calc__num calc__num--money"><span>$</span><input id="c-gate" type="number" inputmode="decimal" min="0" step="1" placeholder="0" /><span>/ t</span></div>
+      </div>
+      <div class="calc__field">
+        <label for="c-bin">Tonnes in a full bin</label>
+        <div class="calc__num"><input id="c-bin" type="number" inputmode="decimal" min="3" max="12" step="0.5" value="7" /><span>t</span></div>
+        <p class="calc__hint">Our estimate is 6–8 t.<Cite id="density" label="workings" /></p>
+      </div>
+    </div>
+  </form>
+
+  <div class="calc__out" aria-live="polite">
+    <p class="calc__label">Landfill costs avoided each year</p>
+    <p class="calc__big" data-out="total">$0</p>
+    <dl class="calc__dl">
+      <div><dt>State levy avoided</dt><dd data-out="levy">$0</dd></div>
+      <div><dt>Gate fees avoided</dt><dd data-out="gate">$0</dd></div>
+      <div><dt>Levy avoided per full bin</dt><dd data-out="perbin">$0</dd></div>
+      <div><dt>Full bins a year</dt><dd data-out="bins">0</dd></div>
+    </dl>
+    <div class="calc__bins" data-out="binviz" aria-hidden="true"></div>
+    <p class="calc__freq" data-out="freq"></p>
+    <p class="calc__small">This is the landfill cost the plasterboard no longer attracts. It doesn’t include Plastercycle’s service charge — we quote that once we know your site.</p>
+  </div>
+</div>
+
+<script>
+  const root = document.getElementById('calculator');
+  if (root) {
+    const metro = Number(root.dataset.metro), rural = Number(root.dataset.rural);
+    const $ = <T extends Element>(s: string) => root.querySelector<T>(s)!;
+    const t = $<HTMLInputElement>('#c-t'), tr = $<HTMLInputElement>('#c-t-range');
+    const gate = $<HTMLInputElement>('#c-gate'), perBin = $<HTMLInputElement>('#c-bin');
+    const out = (k: string) => $<HTMLElement>(`[data-out="${k}"]`);
+    const money = (n: number) => '$' + Math.round(n).toLocaleString('en-AU');
+    const run = () => {
+      const tonnes = Math.max(0, Number(t.value) || 0);
+      const zone = (root.querySelector<HTMLInputElement>('input[name="zone"]:checked')?.value) || 'metro';
+      const levyRate = zone === 'rural' ? rural : metro;
+      const g = Math.max(0, Number(gate.value) || 0);
+      const pb = Math.min(12, Math.max(3, Number(perBin.value) || 7));
+      const levy = tonnes * levyRate, gates = tonnes * g;
+      const bins = tonnes / pb;
+      out('total').textContent = money(levy + gates);
+      out('levy').textContent = money(levy);
+      out('gate').textContent = g ? money(gates) : '—';
+      out('perbin').textContent = money(pb * levyRate);
+      out('bins').textContent = bins < 1 && bins > 0 ? 'under 1' : Math.ceil(bins).toLocaleString('en-AU');
+      const n = Math.ceil(bins);
+      const shown = Math.min(n, 60);
+      out('binviz').innerHTML = Array.from({ length: shown }, () => '<i></i>').join('') + (n > 60 ? `<b>+${(n - 60).toLocaleString('en-AU')}</b>` : '');
+      let f = '';
+      if (n >= 1) {
+        const weeks = 52 / bins;
+        f = weeks >= 2 ? `About one full bin every ${Math.round(weeks)} weeks.` : bins < 104 ? `About ${Math.round(bins / 12)} full bins a month.` : `About ${Math.round(bins / 52)} full bins a week.`;
+      }
+      out('freq').textContent = f;
+    };
+    t.addEventListener('input', () => { tr.value = String(Math.min(3000, Number(t.value) || 0)); run(); });
+    tr.addEventListener('input', () => { t.value = tr.value; run(); });
+    root.querySelectorAll('input').forEach((i) => i.addEventListener('input', run));
+    run();
+  }
+</script>
+
+<style>
+  .calc { display: grid; gap: 0; grid-template-columns: 1fr; background: var(--paper); border-radius: var(--radius-m); overflow: hidden; border: 1px solid var(--rule); }
+  @media (min-width: 960px) { .calc { grid-template-columns: 1.15fr 1fr; } }
+  .calc__in { padding: clamp(1.25rem, 3.5vw, 2.5rem); display: grid; gap: 1.6rem; }
+  .calc__field { border: 0; margin: 0; padding: 0; min-width: 0; }
+  .calc label, .calc legend { display: block; font-weight: 600; color: var(--navy); margin-bottom: 0.6rem; padding: 0; }
+  .calc__opt { font-weight: 400; color: var(--muted); }
+  .calc__tonnes { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center; }
+  @media (max-width: 520px) { .calc__tonnes { grid-template-columns: 1fr; gap: 0.5rem; } .calc__tonnes .calc__num { justify-self: start; } }
+  .calc input[type='range'] { width: 100%; accent-color: var(--steel); min-height: 2.75rem; }
+  .calc__num { display: inline-flex; align-items: center; gap: 0.4rem; border: 2px solid var(--rule-strong); border-radius: var(--radius-s); padding: 0 0.75rem; background: #fff; }
+  .calc__num:focus-within { border-color: var(--steel); }
+  .calc__num input { border: 0; outline: 0; font: 700 1.15rem var(--font-display); color: var(--navy); width: 5.5rem; min-height: 2.75rem; background: transparent; }
+  .calc__num span { color: var(--muted); font-size: 0.95rem; white-space: nowrap; }
+  .calc__num--money input { width: 4.5rem; }
+  .calc__hint { font-size: 0.9rem; color: var(--muted); margin: 0.5rem 0 0; }
+  .calc__seg { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .calc__seg label { margin: 0; font-weight: 500; cursor: pointer; }
+  .calc__seg input { position: absolute; opacity: 0; pointer-events: none; }
+  .calc__seg span { display: block; border: 2px solid var(--rule-strong); border-radius: var(--radius-s); padding: 0.7rem 0.85rem; color: var(--ink); line-height: 1.3; }
+  .calc__seg small { display: block; color: var(--muted); font-size: 0.85rem; margin-top: 0.2rem; }
+  .calc__seg input:checked + span { border-color: var(--steel); background: #eaf1fc; color: var(--navy); font-weight: 600; }
+  .calc__seg input:focus-visible + span { outline: 3px solid var(--green); outline-offset: 2px; }
+  .calc__row2 { display: grid; gap: 1.6rem; grid-template-columns: 1fr; }
+  @media (min-width: 560px) { .calc__row2 { grid-template-columns: 1fr 1fr; } }
+
+  .calc__out { background: var(--navy); color: #fff; padding: clamp(1.25rem, 3.5vw, 2.5rem); display: flex; flex-direction: column; }
+  .calc__label { color: #c3cfe6; margin: 0 0 0.25rem; font-weight: 500; }
+  .calc__big { font: 800 var(--step-4)/1 var(--font-display); letter-spacing: -0.03em; margin: 0 0 1.5rem; color: #fff; max-width: none; }
+  .calc__dl { margin: 0 0 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 1.5rem; }
+  .calc__dl div { border-top: 1px solid rgba(255,255,255,0.22); padding-top: 0.6rem; }
+  .calc__dl dt { font-size: 0.85rem; color: #c3cfe6; }
+  .calc__dl dd { margin: 0.15rem 0 0; font: 700 1.3rem var(--font-display); }
+  .calc__bins { display: flex; flex-wrap: wrap; gap: 5px; min-height: 18px; margin-bottom: 0.6rem; }
+  .calc__bins :global(i) { width: 26px; height: 12px; background: var(--steel); border: 1px solid #6f9ae6; border-radius: 2px; position: relative; }
+  .calc__bins :global(i)::after { content: ''; position: absolute; left: 50%; top: 1px; bottom: 1px; width: 1px; background: rgba(255,255,255,0.4); }
+  .calc__bins :global(b) { font-size: 0.85rem; color: #c3cfe6; align-self: center; margin-left: 0.25rem; }
+  .calc__freq { color: #fff; font-weight: 600; margin-bottom: 1rem; }
+  .calc__small { font-size: 0.85rem; color: #a9b8d6; margin: auto 0 0; }
+</style>

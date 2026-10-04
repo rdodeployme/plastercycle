@@ -1,0 +1,31 @@
+---
+import { ICON_VIEWBOX, ICON_ARROWS_GREEN, ICON_BLUE } from '../data/logoPaths';
+interface Props { variant?: 'colour' | 'reverse'; sub?: boolean; class?: string }
+const { variant = 'colour', sub = true, class: cls = '' } = Astro.props;
+const reverse = variant === 'reverse';
+---
+<span class:list={['logo', { 'logo--reverse': reverse }, cls]}>
+  <svg class="logo__icon" viewBox={ICON_VIEWBOX} aria-hidden="true" focusable="false">
+    <path fill={reverse ? '#8CC54E' : '#78AC43'} d={ICON_ARROWS_GREEN} />
+    <path fill={reverse ? '#FFFFFF' : '#1B4495'} d={ICON_BLUE} />
+  </svg>
+  <span class="logo__type">
+    <span class="logo__word"><span class="logo__a">Plaster</span><span class="logo__b">cycle</span></span>
+    {sub && <span class="logo__sub">Plasterboard recycling</span>}
+  </span>
+</span>
+
+<style>
+  .logo { display: inline-flex; align-items: center; gap: 0.55em; line-height: 1; }
+  .logo__icon { width: 2.6em; height: auto; flex: none; }
+  .logo__type { display: flex; flex-direction: column; gap: 0.32em; }
+  .logo__word { font: 800 1.55em/0.95 var(--font-display); letter-spacing: -0.035em; }
+  .logo__a { color: #1b4495; }
+  .logo__b { color: #5f9e33; }
+  .logo__sub {
+    font: 700 0.56em/1 var(--font-display); letter-spacing: 0.24em; text-transform: uppercase;
+    color: #1b4495; padding-left: 0.08em;
+  }
+  .logo--reverse .logo__a, .logo--reverse .logo__sub { color: #fff; }
+  .logo--reverse .logo__b { color: #8cc54e; }
+</style>

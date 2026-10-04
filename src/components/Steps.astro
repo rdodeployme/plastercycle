@@ -1,0 +1,51 @@
+---
+import { href } from '../data/site';
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
+const steps = [
+  {
+    t: 'We drop the bin',
+    d: 'Our hook-lift truck sets an enclosed 6.3 m bin down at your transfer station, depot or building site.',
+    img: '/images/bin-front.webp', w: 482, h: 447, alt: 'The hook end of the bin, with the A-frame a hook-lift truck picks up',
+  },
+  {
+    t: 'You fill it through the side',
+    d: 'Lift a top-hinged panel and slide or throw the sheets in. The opening starts about a metre off the ground, so there’s no climbing in.',
+    img: '/images/bin-side-open.webp', w: 1004, h: 378, alt: 'The bin with both side panels lifted',
+  },
+  {
+    t: 'It stays dry',
+    d: 'A closed roof, solid rear door and shut panels keep rain off the load — wet board is heavier to haul.',
+    img: '/images/bin-side-closed.webp', w: 1210, h: 439, alt: 'The bin closed up, with roof and panels shut',
+  },
+  {
+    t: 'We take it away to be recycled',
+    d: 'When it’s full, we collect it on the same trucks. The board is processed back into gypsum and paper.',
+    img: '/images/bin-interior.webp', w: 593, h: 384, alt: 'Inside the bin: smooth sheeted walls so the load tips out cleanly',
+  },
+];
+---
+<ol class:list={['steps', { 'steps--compact': compact }]}>
+  {steps.map((s, i) => (
+    <li class="steps__item">
+      {!compact && <div class="steps__img"><img src={href(s.img)} width={s.w} height={s.h} alt={s.alt} loading="lazy" /></div>}
+      <span class="steps__n" aria-hidden="true">{i + 1}</span>
+      <h3>{s.t}</h3>
+      <p>{s.d}</p>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 2rem 1.75rem; grid-template-columns: repeat(auto-fit, minmax(14.5rem, 1fr)); counter-reset: s; }
+  .steps__item { position: relative; padding-top: 1.25rem; border-top: 2px solid var(--navy); }
+  .steps__img { aspect-ratio: 4 / 3; background: var(--paper); border-radius: var(--radius-m); padding: 1rem; margin-bottom: 1.25rem; overflow: hidden; }
+  .steps__img img { width: 100%; height: 100%; object-fit: contain; }
+  @media (max-width: 600px) { .steps__img { aspect-ratio: 16 / 9; } }
+  .steps__n {
+    display: inline-grid; place-items: center; width: 2.1rem; height: 2.1rem; border-radius: 50%;
+    background: var(--steel); color: #fff; font: 800 1rem var(--font-display); margin-bottom: 0.75rem;
+  }
+  .steps__item p { color: var(--muted); font-size: 1rem; }
+  .steps--compact .steps__item { border-top-color: var(--rule-strong); }
+</style>

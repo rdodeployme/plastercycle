@@ -1,0 +1,70 @@
+---
+import Base from '../layouts/Base.astro';
+import AcceptLists from '../components/AcceptLists.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Cite from '../components/Cite.astro';
+import { href } from '../data/site';
+---
+<Base title="What goes in" description="Plasterboard only: offcuts, sheets and cornice in; fibro, foil-backed board, tiles, timber and rubbish out.">
+  <section class="page-head">
+    <div class="wrap">
+      <p class="crumb"><a href={href('/')}>Home</a> / What goes in</p>
+      <h1>Plasterboard in. Everything else out.</h1>
+      <p>Clean, separate plasterboard can be recycled. Mixed with other rubbish, it can’t. That’s the whole reason the bin exists.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <AcceptLists />
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="wrap grid-2">
+      <div>
+        <h2>Plasterboard or fibro?</h2>
+        <p>They can look alike in a trailer load, and the difference matters. Fibro sheeting made before 1987 contained around 15% asbestos.<Cite id="fibro" /> One sheet of it contaminates the whole bin.</p>
+        <p>If you’re not sure what a sheet is, it doesn’t go in. Treat it as possible asbestos and handle it the way your site or council requires.</p>
+      </div>
+      <div class="tells">
+        <h3>Usually plasterboard</h3>
+        <ul>
+          <li>Paper face on both sides</li>
+          <li>Chalky white or grey core showing at cut or broken edges</li>
+          <li>Often a maker’s name printed on the back</li>
+        </ul>
+        <h3>Treat as possible fibro</h3>
+        <ul>
+          <li>Hard, cement-like sheet with no paper face</li>
+          <li>Dimpled or textured back</li>
+          <li>From eaves, wet areas, sheds or outside walls of an older building</li>
+        </ul>
+        <div class="note note--warn"><p>Don’t cut, snap or sand a sheet to check. If it is fibro, that releases fibres. Only a lab test confirms asbestos.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <h2>Getting more into each load</h2>
+      <ul class="tips">
+        <li><strong>Break big sheets.</strong> Broken board packs tighter than whole sheets leaning against each other.</li>
+        <li><strong>Fill from the back.</strong> Use the panel nearest the rear door first.</li>
+        <li><strong>Shut the panels.</strong> Close up at the end of the day so rain stays out.</li>
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .tells { background: var(--chalk); border-radius: var(--radius-m); padding: clamp(1.25rem, 3vw, 2rem); }
+  .tells h3:not(:first-child) { margin-top: 1.5rem; }
+  .tells ul { margin: 0 0 1rem; padding-left: 1.2rem; }
+  .tells li { margin-bottom: 0.35rem; }
+  .tips { list-style: none; padding: 0; margin: 1.5rem 0 0; display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
+  .tips li { background: var(--paper); border-radius: var(--radius-m); padding: 1.25rem 1.4rem; }
+  .tips strong { display: block; font-family: var(--font-display); color: var(--navy); font-size: 1.1rem; margin-bottom: 0.35rem; }
+</style>

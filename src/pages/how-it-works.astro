@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import Steps from '../components/Steps.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { href, BIN } from '../data/site';
+const faq = [
+  { q: 'Who is the bin for?', a: '<p>Council transfer stations and resource recovery centres first, plus depots and larger building sites that throw away a lot of board.</p>' },
+  { q: 'How much space does it need?', a: `<p>The bin itself is ${(BIN.length/1000).toFixed(1)} m long and ${(BIN.width/1000).toFixed(2)} m wide. You also need clear, firm ground in front of the hook end so a hook-lift truck can reverse up, drop it and pick it up. We’ll talk through access with you before the first drop.</p>` },
+  { q: 'How do we tell you it’s full?', a: `<p>Get in touch and we’ll book the collection. If you fill bins regularly, we can talk about a set schedule. <a href="${href('/book/')}">Start here</a>.</p>` },
+  { q: 'What does it cost?', a: '<p>It depends on where you are and how quickly the bin fills. Tell us about your site and we’ll quote. Our calculator shows the landfill levy the board no longer attracts, so you can compare like with like.</p>' },
+  { q: 'Do we need to break the sheets up?', a: '<p>No. Slide sheets in whole if they fit through the opening, or break them up. Broken board packs tighter, so each load holds more.</p>' },
+  { q: 'Can the public use it?', a: '<p>Yes, at a staffed transfer station. Someone should check loads at the gate, because older fibro sheeting can look like plasterboard and must never go in. See <a href="' + href('/what-goes-in/') + '">what goes in</a>.</p>' },
+];
+---
+<Base title="How it works" description="We drop an enclosed plasterboard bin, you fill it through the side panels, and we collect it on a hook-lift truck to be recycled.">
+  <section class="page-head">
+    <div class="wrap">
+      <p class="crumb"><a href={href('/')}>Home</a> / How it works</p>
+      <h1>Drop. Fill. Collect. Recycle.</h1>
+      <p>It works like any hook-lift bin service, with one difference: the bin is purpose-built for plasterboard, and what goes in it is sent for recycling, not landfill.</p>
+    </div>
+  </section>
+  <section class="section" style="padding-top:0">
+    <div class="wrap"><Steps /></div>
+  </section>
+  <section class="section section--paper">
+    <div class="wrap grid-2">
+      <div>
+        <h2>Why a dedicated bin</h2>
+        <p>Plasterboard that ends up in a mixed skip is almost impossible to recover. Kept on its own, clean and dry, it’s a resource: around 94% of a sheet is gypsum.</p>
+        <p>An open skip fills with rain and rubbish. This bin has a roof, a solid rear door and loading panels that shut, so what goes in is plasterboard and stays that way until it’s tipped.</p>
+        <p><a href={href('/the-bin/')}>Look over the bin, view by view</a></p>
+      </div>
+      <div>
+        <h2>Questions</h2>
+        <Faq items={faq} />
+      </div>
+    </div>
+  </section>
+  <CtaBand />
+</Base>

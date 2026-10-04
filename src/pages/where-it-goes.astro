@@ -1,0 +1,72 @@
+---
+import Base from '../layouts/Base.astro';
+import Composition from '../components/Composition.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Cite from '../components/Cite.astro';
+import { href } from '../data/site';
+const uses = [
+  { t: 'New plasterboard', d: 'Ground back to powder, recovered gypsum can replace some of the quarried gypsum in new sheets. Gyprock HD, made in Australia, is formulated with 10% recycled content; in France, Placo is working towards up to 30% recycled material in its board.', cite: 'recycled-content' },
+  { t: 'Soil conditioner', d: 'Gypsum is spread on farms to break up and improve heavy clay soils. Recycled plasterboard gypsum is already sold for this in Victoria and New South Wales.', cite: 'soil' },
+  { t: 'Cement and concrete', d: 'Gypsum is an ingredient in cement manufacture, and recovered plasterboard gypsum is accepted for concrete making.', cite: 'uses' },
+];
+---
+<Base title="Where it goes" description="Plasterboard is around 94% gypsum. Recovered, it goes back into new plasterboard, cement and soil conditioner instead of landfill.">
+  <section class="page-head">
+    <div class="wrap">
+      <p class="crumb"><a href={href('/')}>Home</a> / Where it goes</p>
+      <h1>From wall offcut back to raw material.</h1>
+      <p>Plasterboard is one of the simplest building materials to recover, as long as it arrives clean and on its own.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap"><Composition /></div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="wrap">
+      <h2>Three places the gypsum goes</h2>
+      <div class="uses">
+        {uses.map((u) => (
+          <article>
+            <h3>{u.t}</h3>
+            <p>{u.d}<Cite id={u.cite} /></p>
+          </article>
+        ))}
+      </div>
+      <p class="uses__paper">The paper liner is separated out during processing and can be recycled too.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap grid-2">
+      <div>
+        <h2>Why not just landfill it?</h2>
+        <p>Because gypsum and rotting waste don’t mix. Buried together, gypsum can produce hydrogen sulphide, a toxic gas that smells of rotten eggs. European rules only let gypsum waste into landfill cells that take no biodegradable waste.<Cite id="h2s" /></p>
+        <p>And because it’s a waste of a resource. Every sheet buried is gypsum that has to be quarried again.</p>
+      </div>
+      <div class="hier">
+        <div class="hier__row hier__row--best"><strong>Recycle</strong><span>Back into board, cement or soil</span></div>
+        <div class="hier__row"><strong>Separate</strong><span>Its own bin, dry and clean</span></div>
+        <div class="hier__row hier__row--worst"><strong>Landfill</strong><span>Levy, lost material, gas risk</span></div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .uses { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); margin-top: 1.5rem; }
+  .uses article { border-top: 4px solid var(--green); padding-top: 1rem; }
+  .uses p { color: var(--muted); font-size: 1rem; }
+  .uses__paper { margin-top: 1.5rem; color: var(--ink); }
+  .hier { display: grid; gap: 0.5rem; }
+  .hier__row { display: grid; grid-template-columns: 7.5rem 1fr; align-items: center; gap: 1rem; padding: 1rem 1.25rem; border-radius: var(--radius-s); background: var(--paper); border: 1px solid var(--rule); }
+  .hier__row strong { font-family: var(--font-display); color: var(--navy); font-size: 1.15rem; }
+  .hier__row span { color: var(--muted); }
+  .hier__row--best { background: var(--navy); border-color: var(--navy); }
+  .hier__row--best strong { color: var(--green); }
+  .hier__row--best span { color: #d9e2f2; }
+  .hier__row--worst { opacity: 0.75; }
+</style>

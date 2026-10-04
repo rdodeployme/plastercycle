@@ -1,0 +1,112 @@
+---
+import Base from '../layouts/Base.astro';
+import BinDrawing from '../components/BinDrawing.astro';
+import ScaleCompare from '../components/ScaleCompare.astro';
+import Steps from '../components/Steps.astro';
+import Composition from '../components/Composition.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Cite from '../components/Cite.astro';
+import { href } from '../data/site';
+import { LEVY_METRO } from '../data/facts';
+---
+<Base>
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero__text">
+        <h1>A bin built for plasterboard.</h1>
+        <div class="hero__side">
+        <p class="lede">We drop an enclosed, weatherproof bin at your transfer station or site. Plasterboard goes in through the side, stays dry, and we take it away on our hook-lift trucks to be recycled into gypsum.</p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href={href('/book/')}>Book a bin</a>
+          <a class="btn btn--ghost" href={href('/the-bin/')}>See the bin up close</a>
+        </div>
+        </div>
+      </div>
+      <div class="hero__art">
+        <BinDrawing start="open" id="hero-bin" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="wrap">
+      <ScaleCompare />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="head-row">
+        <h2>How it works</h2>
+        <a href={href('/how-it-works/')}>The full run-through</a>
+      </div>
+      <Steps />
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="wrap grid-2">
+      <div>
+        <h2>For councils and transfer stations</h2>
+        <p>Every tonne of plasterboard that goes to landfill in metropolitan Victoria carries ${LEVY_METRO.toFixed(2)} in state levy this financial year.<Cite id="levy" /> A dedicated bin keeps it separate from general waste and out of the levy.</p>
+        <p>Plug in how much board comes through your gate and see what it adds up to.</p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href={href('/councils/#calculator')}>Work out your levy savings</a>
+        </div>
+      </div>
+      <div class="levy-card" aria-label="Example: 500 tonnes a year">
+        <p class="levy-card__k">500 t of plasterboard a year, metro landfill</p>
+        <p class="levy-card__v">${Math.round(500 * LEVY_METRO).toLocaleString('en-AU')}</p>
+        <p class="levy-card__k">in state levy that no longer applies</p>
+        <div class="dim levy-card__dim"><i class="tick tick--l"></i><span>about 72 full bins</span><i class="tick tick--r"></i></div>
+        <p class="levy-card__s">Levy only, before gate fees. Bin count assumes about 7 t a load.<Cite id="density" label="estimate" /></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap grid-2">
+      <div>
+        <h2>Almost all of it is gypsum</h2>
+        <p>Strip off the paper and a sheet of plasterboard is mostly the same mineral that gets quarried to make new board. Recovered, it goes back into plasterboard, into cement, and onto farms as a soil conditioner.<Cite id="uses" /></p>
+        <p><a href={href('/where-it-goes/')}>Where recycled plasterboard ends up</a></p>
+      </div>
+      <Composition />
+    </div>
+  </section>
+
+  <section class="section section--paper section--tight">
+    <div class="wrap ask">
+      <div>
+        <h2>One rule at the bin: plasterboard only</h2>
+        <p>No fibro, no foil-backed board, no tiles, timber or rubbish. If you can’t tell whether a sheet is plasterboard or fibro, leave it out.<Cite id="fibro" label="why" /></p>
+      </div>
+      <a class="btn btn--ghost" href={href('/what-goes-in/')}>What goes in, what stays out</a>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .hero { padding-block: clamp(2.5rem, 6vw, 5rem) clamp(3rem, 6vw, 5rem); }
+  .hero .wrap { display: grid; gap: clamp(2rem, 5vw, 3.5rem); }
+  .hero__text { max-width: 44rem; }
+  @media (min-width: 1040px) {
+    .hero__text { max-width: none; display: grid; grid-template-columns: 1.15fr 1fr; gap: 3rem; align-items: end; }
+    .hero__text h1 { margin: 0; }
+    .hero__side .lede { margin-bottom: 0; }
+  }
+  .hero h1 { font-size: var(--step-5); letter-spacing: -0.045em; line-height: 0.95; }
+  .hero__art { padding-top: 1.5rem; }
+  .head-row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 2rem; margin-bottom: 2rem; }
+  .head-row h2 { margin: 0; }
+  .levy-card { background: var(--chalk); border-radius: var(--radius-m); padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--rule); }
+  .levy-card__k { color: var(--muted); margin: 0; }
+  .levy-card__v { font: 800 var(--step-4)/1.05 var(--font-display); color: var(--steel); letter-spacing: -0.03em; margin: 0.35rem 0; }
+  .levy-card__dim { margin: 1.5rem 0 0.75rem; }
+  .levy-card__s { font-size: 0.9rem; color: var(--muted); margin: 0; }
+  .ask { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.5rem 3rem; }
+  .ask h2 { font-size: var(--step-2); }
+  .ask p { margin: 0; }
+</style>

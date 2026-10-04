@@ -1,0 +1,119 @@
+---
+import Base from '../layouts/Base.astro';
+import { href, ENQUIRY_EMAIL } from '../data/site';
+---
+<Base title="Book a bin" description="Tell us about your transfer station, depot or site and we’ll come back with a plan and a quote for a Plastercycle bin.">
+  <section class="page-head">
+    <div class="wrap">
+      <p class="crumb"><a href={href('/')}>Home</a> / Book a bin</p>
+      <h1>Book a bin.</h1>
+      <p>Tell us where the bin would go and roughly how much plasterboard you see. We’ll come back to you with a plan and a quote.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap book">
+      <form class="form" id="book-form" action={`mailto:${ENQUIRY_EMAIL}`} method="post" enctype="text/plain" data-to={ENQUIRY_EMAIL} novalidate>
+        <div class="form__grid">
+          <div class="f"><label for="f-name">Your name</label><input id="f-name" name="Name" autocomplete="name" required /></div>
+          <div class="f"><label for="f-org">Organisation</label><input id="f-org" name="Organisation" autocomplete="organization" required /></div>
+          <div class="f"><label for="f-email">Email</label><input id="f-email" name="Email" type="email" autocomplete="email" required /></div>
+          <div class="f"><label for="f-phone">Phone <span class="opt">(optional)</span></label><input id="f-phone" name="Phone" type="tel" autocomplete="tel" /></div>
+          <div class="f f--full">
+            <label for="f-type">Where would the bin go?</label>
+            <select id="f-type" name="Site type" required>
+              <option value="">Choose one</option>
+              <option>Council transfer station or resource recovery centre</option>
+              <option>Council depot</option>
+              <option>Private transfer station</option>
+              <option>Building or development site</option>
+              <option>Something else</option>
+            </select>
+          </div>
+          <div class="f"><label for="f-loc">Suburb and state</label><input id="f-loc" name="Location" autocomplete="address-level2" required /></div>
+          <div class="f">
+            <label for="f-vol">Plasterboard a year, roughly</label>
+            <select id="f-vol" name="Volume">
+              <option>Not sure yet</option>
+              <option>Under 50 t</option>
+              <option>50–250 t</option>
+              <option>250–1,000 t</option>
+              <option>Over 1,000 t</option>
+            </select>
+          </div>
+          <div class="f f--full"><label for="f-msg">Anything else we should know? <span class="opt">(optional)</span></label><textarea id="f-msg" name="Message" rows="4" placeholder="Access, opening hours, when you’d like to start"></textarea></div>
+        </div>
+        <p class="form__err" role="alert" hidden>Fill in the highlighted fields, then press Book a bin again.</p>
+        <button class="btn btn--primary" type="submit">Book a bin</button>
+        <p class="form__how">This opens your email app with your details filled in, addressed to us. Press send to finish.</p>
+      </form>
+
+      <div class="form__done" id="book-done" hidden tabindex="-1">
+        <h2>Nearly done — press send in your email.</h2>
+        <p>Your email app should have opened with your request filled in. Send it and we’ll be in touch.</p>
+        <p>Nothing opened? Email the same details to <a href={`mailto:${ENQUIRY_EMAIL}`}>{ENQUIRY_EMAIL}</a>.</p>
+        <button class="btn btn--ghost" type="button" id="book-again">Edit my details</button>
+      </div>
+
+      <aside class="book__aside">
+        <h2>What happens next</h2>
+        <ol>
+          <li>We look at where you are and how much board you see.</li>
+          <li>We talk through where the bin sits and how the truck gets to it.</li>
+          <li>You get a quote, and we book the first drop.</li>
+        </ol>
+        <p><a href={href('/councils/#calculator')}>Work out your landfill levy savings first</a></p>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const form = document.getElementById('book-form') as HTMLFormElement | null;
+  const done = document.getElementById('book-done');
+  const err = form?.querySelector<HTMLElement>('.form__err');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let ok = true;
+    form.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[required]').forEach((el) => {
+      const bad = !el.value.trim() || (el.type === 'email' && !/^\S+@\S+\.\S+$/.test(el.value));
+      el.setAttribute('aria-invalid', String(bad));
+      if (bad) ok = false;
+    });
+    if (!ok) { err!.hidden = false; form.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus(); return; }
+    err!.hidden = true;
+    const data = new FormData(form);
+    const lines: string[] = [];
+    data.forEach((v, k) => { if (String(v).trim()) lines.push(`${k}: ${v}`); });
+    const subject = `Plastercycle bin request — ${data.get('Organisation')}`;
+    const body = `${lines.join('\n')}\n\nSent from plastercycle.com`;
+    window.location.href = `mailto:${form.dataset.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    form.hidden = true;
+    if (done) { done.hidden = false; done.focus(); }
+  });
+  document.getElementById('book-again')?.addEventListener('click', () => {
+    if (form && done) { done.hidden = true; form.hidden = false; form.querySelector<HTMLElement>('input')?.focus(); }
+  });
+</script>
+
+<style>
+  .book { display: grid; gap: clamp(2rem, 5vw, 4rem); grid-template-columns: 1fr; align-items: start; }
+  @media (min-width: 960px) { .book { grid-template-columns: 1.7fr 1fr; } .book__aside { grid-column: 2; grid-row: 1; } }
+  .form, .form__done { background: var(--paper); border-radius: var(--radius-m); padding: clamp(1.25rem, 3.5vw, 2.25rem); border: 1px solid var(--rule); }
+  .form__grid { display: grid; gap: 1.25rem; grid-template-columns: 1fr; margin-bottom: 1.5rem; }
+  @media (min-width: 640px) { .form__grid { grid-template-columns: 1fr 1fr; } .f--full { grid-column: 1 / -1; } }
+  .f label { display: block; font-weight: 600; color: var(--navy); margin-bottom: 0.4rem; }
+  .opt { font-weight: 400; color: var(--muted); }
+  .f input, .f select, .f textarea {
+    width: 100%; font: 400 1rem var(--font-body); color: var(--ink); background: #fff;
+    border: 2px solid var(--rule-strong); border-radius: var(--radius-s); padding: 0.7rem 0.8rem; min-height: 3rem;
+  }
+  .f input:focus, .f select:focus, .f textarea:focus { outline: none; border-color: var(--steel); box-shadow: 0 0 0 3px rgba(44,102,208,0.2); }
+  .f [aria-invalid='true'] { border-color: var(--danger); background: #fdf3f1; }
+  .form__err { color: var(--danger); font-weight: 600; }
+  .form__how { color: var(--muted); font-size: 0.9rem; margin: 0.9rem 0 0; }
+  .form__done h2 { font-size: var(--step-2); }
+  .book__aside h2 { font-size: var(--step-1); }
+  .book__aside ol { padding-left: 1.2rem; margin: 0 0 1.5rem; }
+  .book__aside li { margin-bottom: 0.6rem; }
+</style>

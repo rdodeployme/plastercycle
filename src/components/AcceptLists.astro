@@ -1,0 +1,41 @@
+---
+import Cite from './Cite.astro';
+---
+<div class="acc">
+  <section class="acc__col acc__col--in" aria-labelledby="acc-in">
+    <h3 id="acc-in"><span class="acc__mark" aria-hidden="true">✓</span>Goes in the bin</h3>
+    <ul>
+      <li>Plasterboard offcuts and part sheets</li>
+      <li>Whole sheets that are damaged or surplus</li>
+      <li>Standard, fire-rated and moisture-resistant board<Cite id="types" /></li>
+      <li>Plaster cornice</li>
+      <li>Board removed from walls and ceilings, if it’s clean and you’re sure it isn’t fibro</li>
+    </ul>
+    <p class="acc__tip">Pull out screws, nails and timber where you can. Clean, separated board is what makes it recyclable.</p>
+  </section>
+  <section class="acc__col acc__col--out" aria-labelledby="acc-out">
+    <h3 id="acc-out"><span class="acc__mark" aria-hidden="true">✕</span>Stays out</h3>
+    <ul>
+      <li><strong>Fibro, or any sheet that might contain asbestos</strong></li>
+      <li>Foil-backed board and board with insulation bonded to it<Cite id="hard-boards" /></li>
+      <li>Board with lead paint</li>
+      <li>Tiles, timber, metal, insulation batts, plastic wrap</li>
+      <li>Concrete, bricks, soil and general rubbish</li>
+      <li>Liquids, paint tins and hazardous waste</li>
+    </ul>
+  </section>
+</div>
+
+<style>
+  .acc { display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+  @media (min-width: 820px) { .acc { grid-template-columns: 1fr 1fr; } }
+  .acc__col { background: var(--paper); border-radius: var(--radius-m); padding: clamp(1.25rem, 3vw, 2rem); border-top: 6px solid var(--green); }
+  .acc__col--out { border-top-color: var(--danger); }
+  .acc__col h3 { display: flex; align-items: center; gap: 0.6rem; font-size: var(--step-2); }
+  .acc__mark { display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background: var(--green); color: #fff; font-size: 1rem; flex: none; }
+  .acc__col--out .acc__mark { background: var(--danger); }
+  .acc ul { margin: 0 0 1rem; padding: 0; list-style: none; }
+  .acc li { padding: 0.7rem 0; border-bottom: 1px solid var(--chalk); }
+  .acc li:last-child { border-bottom: 0; }
+  .acc__tip { color: var(--muted); font-size: 0.97rem; margin: 0; }
+</style>
