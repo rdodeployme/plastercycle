@@ -3,7 +3,16 @@ const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
 export const href = (p: string) => (p.startsWith('/') ? BASE + p : p);
 
 /** Enquiries: the form opens the visitor's email app addressed here. */
-export const ENQUIRY_EMAIL = 'ryan@junk.com.au';
+export const ENQUIRY_EMAIL = 'nigel@recycle.au';
+
+/** Site contact (Richard call, 5 Oct 2026). Shown in the footer and on the Book a bin page. */
+export const CONTACT = {
+  name: 'Nigel Taylor',
+  role: 'CEO, Recycle',
+  email: ENQUIRY_EMAIL,
+  phone: '0427 888 222',
+  tel: '+61427888222',
+};
 
 export const SITE = {
   name: 'Plastercycle',
@@ -11,6 +20,13 @@ export const SITE = {
   tagline: 'Plasterboard recycling',
   description:
     'Plastercycle drops an enclosed, weatherproof bin at councils, transfer stations and building sites, collects it on a hook-lift truck and sends the plasterboard to be recycled into gypsum.',
+};
+
+/** Richard Furnari's statement (Richard call, 5 Oct 2026). Shown on the home page after the "Put a bin where the plasterboard turns up" band. */
+export const STATEMENT = {
+  quote: 'Landfill transfers the problem of waste from one location to another, from one point in time to another, and ultimately from one generation to the next. Recycling transforms it.',
+  highlight: 'Recycling transforms it.',
+  by: 'Richard Furnari',
 };
 
 export const NAV = [

@@ -1,0 +1,25 @@
+---
+/** A statement panel: one quote and who said it. `highlight` (a closing phrase of the quote) is set in green. */
+interface Props { quote: string; by: string; highlight?: string }
+const { quote, by, highlight } = Astro.props;
+const i = highlight ? quote.lastIndexOf(highlight) : -1;
+const head = i >= 0 ? quote.slice(0, i) : quote;
+const tail = i >= 0 ? quote.slice(i) : '';
+---
+<section class="stmt">
+  <div class="wrap">
+    <figure class="stmt__fig">
+      <blockquote class="stmt__q"><p>“{head}{tail && <em>{tail}</em>}”</p></blockquote>
+      <figcaption class="stmt__by">— {by}</figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .stmt { background: var(--paper); padding-block: clamp(3rem, 8vw, 6rem); }
+  .stmt__fig { margin: 0; max-width: 58rem; border-left: 6px solid var(--green); padding-left: clamp(1rem, 3vw, 2rem); }
+  .stmt__q { margin: 0; }
+  .stmt__q p { margin: 0; max-width: none; font: 700 clamp(1.4rem, 1rem + 1.8vw, 2.35rem)/1.28 var(--font-display); letter-spacing: -0.02em; color: var(--navy); text-wrap: pretty; }
+  .stmt__q em { font-style: normal; color: var(--green-ink); }
+  .stmt__by { margin-top: 1.25rem; font: 600 var(--step-0)/1.4 var(--font-body); color: var(--muted); }
+</style>

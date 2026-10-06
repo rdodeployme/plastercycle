@@ -7,8 +7,9 @@ import Doors from '../components/Doors.astro';
 import Composition from '../components/Composition.astro';
 import ResourceStrip from '../components/ResourceStrip.astro';
 import CtaBand from '../components/CtaBand.astro';
+import Statement from '../components/Statement.astro';
 import Cite from '../components/Cite.astro';
-import { href } from '../data/site';
+import { href, STATEMENT } from '../data/site';
 import { LEVIES } from '../data/levies';
 const vic = LEVIES[0].zones[0].rate, nsw = LEVIES[1].zones[0].rate, qld = LEVIES[2].zones[0].rate;
 ---
@@ -23,6 +24,7 @@ const vic = LEVIES[0].zones[0].rate, nsw = LEVIES[1].zones[0].rate, qld = LEVIES
             <a class="btn btn--primary" href={href('/book/')}>Book a bin</a>
             <a class="btn btn--ghost" href={href('/councils/#calculator')}>Work out what it saves</a>
           </div>
+          <p class="initiative">A <span class="initiative__word"><span class="initiative__re">Re</span><span class="initiative__cycle">cycle</span></span> initiative</p>
         </div>
       </div>
       <div class="hero__art">
@@ -105,6 +107,8 @@ const vic = LEVIES[0].zones[0].rate, nsw = LEVIES[1].zones[0].rate, qld = LEVIES
   </section>
 
   <CtaBand />
+
+  <Statement quote={STATEMENT.quote} highlight={STATEMENT.highlight} by={STATEMENT.by} />
 </Base>
 
 <style>
@@ -118,6 +122,10 @@ const vic = LEVIES[0].zones[0].rate, nsw = LEVIES[1].zones[0].rate, qld = LEVIES
   }
   .hero h1 { font-size: var(--step-5); letter-spacing: -0.045em; line-height: 0.95; }
   .hero__art { padding-top: 0.5rem; }
+  .initiative { margin: 2rem 0 0; font: 700 var(--step-3)/1.1 var(--font-display); letter-spacing: -0.02em; color: var(--ink); }
+  .initiative__word { font-weight: 800; }
+  .initiative__re { color: var(--recycle-brown); }
+  .initiative__cycle { color: #000; }
   @media (max-width: 600px) {
     .hero { padding-block: 1.5rem 2.5rem; }
     .hero .wrap { gap: 1.25rem; }
@@ -127,6 +135,7 @@ const vic = LEVIES[0].zones[0].rate, nsw = LEVIES[1].zones[0].rate, qld = LEVIES
     .hero__side { order: 3; }
     .hero__side .lede { font-size: 1.0625rem; }
     .hero__side .btn-row { margin-top: 1.25rem; }
+    .initiative { font-size: clamp(1.5rem, 7.2vw, 1.9rem); margin-top: 1.5rem; }
   }
   .head-row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 2rem; margin-bottom: 2rem; }
   .head-row h2 { margin: 0; }

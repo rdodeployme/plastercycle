@@ -30,7 +30,7 @@ h1,h2,h3{{font-family:M;color:#14316b;letter-spacing:-0.02em;line-height:1.05;ma
     'bin_hook': b64('public/images/3d/hook.webp', 'image/webp'),
     'bin_overview': b64('public/images/3d/overview-open.webp', 'image/webp'),
 }
-EMAIL = 'ryan@junk.com.au'
+EMAIL = 'nigel@recycle.au'  # Nigel Taylor, CEO, Recycle (Richard call, 5 Oct 2026)
 
 def page(body, extra_css='', size='A4'):
     return f"""<!doctype html><html lang="en-AU"><head><meta charset="utf-8"><style>{A['css']}

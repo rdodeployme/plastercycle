@@ -1,5 +1,5 @@
 ---
-/** Two audiences, two doors. */
+/** Who it's for: four audiences, in the order Richard set on the 5 Oct 2026 call. */
 import { href } from '../data/site';
 ---
 <div class="doors">
@@ -11,9 +11,21 @@ import { href } from '../data/site';
   </a>
   <a class="door" href={href('/builders/')}>
     <img src={href('/images/3d/side-open.webp')} width="2128" height="757" alt="" loading="lazy" />
-    <span class="door__k">Builders and sites</span>
+    <span class="door__k">Builders and construction sites</span>
     <span class="door__t">Offcuts into the blue bin as you go. One line in the waste plan, sorted.</span>
     <span class="door__go">How it works on site</span>
+  </a>
+  <a class="door" href={href('/builders/')}>
+    <img src={href('/images/3d/overview-closed.webp')} width="1785" height="959" alt="" loading="lazy" />
+    <span class="door__k">Residential builders</span>
+    <span class="door__t">A bin on the house site while the plasterers work. We collect it when it’s full.</span>
+    <span class="door__go">How it works on site</span>
+  </a>
+  <a class="door" href={href('/book/')}>
+    <img src={href('/images/3d/side-closed.webp')} width="2016" height="757" alt="" loading="lazy" />
+    <span class="door__k">Plaster manufacturers and retailers</span>
+    <span class="door__t">Plasterers bring back their off-cuts when they collect their next load.</span>
+    <span class="door__go">Talk to us about a bin</span>
   </a>
 </div>
 

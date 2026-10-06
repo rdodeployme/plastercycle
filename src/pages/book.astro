@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { href, ENQUIRY_EMAIL } from '../data/site';
+import { href, ENQUIRY_EMAIL, CONTACT } from '../data/site';
 import { LEVIES } from '../data/levies';
 ---
 <Base title="Book a bin" description="Tell us about your transfer station, depot or site and we’ll come back with a plan and a quote for a Plastercycle bin.">
@@ -99,6 +99,8 @@ import { LEVIES } from '../data/levies';
           <li>You get a quote, and we book the first drop.</li>
         </ol>
         <p><a href={href('/councils/#calculator')}>Work out your landfill levy savings first</a></p>
+        <h2>Talk to us</h2>
+        <p><strong>{CONTACT.name}</strong>, {CONTACT.role}<br /><a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a><br /><a href={`tel:${CONTACT.tel}`}>{CONTACT.phone}</a></p>
       </aside>
     </div>
   </section>

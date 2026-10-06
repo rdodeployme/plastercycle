@@ -50,13 +50,8 @@ const stages = [
           )}
           {s.id === 'truck' && (
             <svg viewBox="0 0 400 300" class="jy__svg">
-              <path d="M20 232 h360" class="s-rule" />
-              <path d="M26 226 h56 v-70 h40 l22 -36 h26 v106 Z" class="f-navy s-navy draw" pathLength="1" />
-              <rect x="96" y="128" width="28" height="22" class="f-chalk" />
-              <rect x="150" y="212" width="226" height="14" class="f-navy" />
-              <image href={href('/images/3d/side-closed.webp')} x="152" y="130" width="226" height="86" preserveAspectRatio="xMidYMax meet" />
-              <path d="M150 180 q-30 -30 -34 -70" class="s-steel draw d2" pathLength="1" fill="none" />
-              <circle cx="60" cy="232" r="16" class="f-ink" /><circle cx="130" cy="232" r="16" class="f-ink" /><circle cx="300" cy="232" r="16" class="f-ink" /><circle cx="345" cy="232" r="16" class="f-ink" />
+              <defs><clipPath id="jy-truck-clip"><rect x="10" y="22" width="380" height="214" rx="6" /></clipPath></defs>
+              <image href={href('/images/hook-truck.jpg')} x="10" y="22" width="380" height="214" preserveAspectRatio="xMidYMid slice" clip-path="url(#jy-truck-clip)" />
               <text x="200" y="278" text-anchor="middle" class="jy__lbl">full bin off, empty bin on</text>
             </svg>
           )}

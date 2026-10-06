@@ -1,6 +1,6 @@
 ---
 import Logo from './Logo.astro';
-import { NAV, CTA, SITE, FOOTER_EXTRA, href } from '../data/site';
+import { NAV, CTA, SITE, FOOTER_EXTRA, CONTACT, href } from '../data/site';
 const year = new Date().getFullYear();
 ---
 <footer class="ftr">
@@ -8,6 +8,7 @@ const year = new Date().getFullYear();
     <div class="ftr__brand">
       <Logo variant="reverse" />
       <p>Enclosed bins for plasterboard at councils, transfer stations and building sites. Collected on our hook-lift trucks and sent to be recycled.</p>
+      <p class="ftr__contact"><strong>{CONTACT.name}</strong>, {CONTACT.role}<br /><a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a> · <a href={`tel:${CONTACT.tel}`}>{CONTACT.phone}</a></p>
     </div>
     <nav aria-label="Footer">
       <ul>
@@ -29,6 +30,7 @@ const year = new Date().getFullYear();
   @media (min-width: 800px) { .ftr__in { grid-template-columns: 1.3fr 1fr; } }
   .ftr__brand :global(.logo) { font-size: 18px; margin-bottom: 1.25rem; }
   .ftr__brand p { color: #c3cfe6; max-width: 30rem; }
+  .ftr__brand .ftr__contact { color: #fff; }
   .ftr ul { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: 1.5rem; }
   .ftr li { break-inside: avoid; }
   .ftr a { color: #fff; text-decoration: none; display: inline-block; padding: 0.6rem 0; min-height: 2.75rem; }
