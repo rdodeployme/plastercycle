@@ -237,12 +237,81 @@ council = f"""
 </div>
 """
 
+# ---------- 5. A4 bin specification sheet (from the bin concept drawing, 14 Oct 2026) ----------
+for k, f in [('bin_inside', 'inside'), ('bin_rear_open', 'rear-open')]:
+    A[k] = b64(f'public/images/3d/{f}.webp', 'image/webp')
+spec_css = """
+body{width:210mm;height:297mm;overflow:hidden;padding:12mm 15mm 11mm;display:grid;grid-template-rows:auto auto auto 1fr auto;gap:4.5mm;background:#fff;font-size:10.85pt;line-height:1.4}
+.hd{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #2c66d0;padding-bottom:4mm}
+.hd .logo{height:15mm}
+.hd .t{text-align:right}.hd .t b{display:block;font:800 19pt M;color:#14316b;letter-spacing:-0.02em}.hd .t span{font-size:9.5pt;color:#566074}
+.hero{background:#eef2f7;border-radius:4mm;padding:5mm 6mm 4mm;display:grid;grid-template-columns:auto 1fr;gap:3mm;align-items:stretch}
+.hero figure{margin:0}.hero img{width:100%;display:block}
+.dimw{display:flex;align-items:center;gap:2mm;font:700 9pt M;color:#14316b;margin-bottom:2mm}
+.dimw i{flex:1;height:0;border-top:1.4px solid #14316b;position:relative}
+.dimw i:before,.dimw i:after{content:"";position:absolute;top:-2.2mm;height:4.4mm;border-left:1.4px solid #14316b}.dimw i:before{left:0}.dimw i:after{right:0}
+.dimh{display:flex;flex-direction:column;align-items:center;gap:1.5mm;font:700 9pt M;color:#14316b;height:100%;padding-top:7mm}
+.dimh i{flex:1;width:0;border-left:1.4px solid #14316b;position:relative}
+.dimh i:before,.dimh i:after{content:"";position:absolute;left:-2.2mm;width:4.4mm;border-top:1.4px solid #14316b}.dimh i:before{top:0}.dimh i:after{bottom:0}
+.dimh span{writing-mode:vertical-rl;transform:rotate(180deg)}
+.cap{font-size:9pt;color:#566074;margin-top:1.5mm}
+.views{display:grid;grid-template-columns:repeat(3,1fr);gap:4mm}
+.views figure{margin:0;background:#eef2f7;border-radius:3mm;padding:3mm;display:flex;flex-direction:column}
+.views .im{height:26mm;display:grid;place-items:center}.views img{max-height:26mm;max-width:100%}
+.views figcaption{font-size:8.8pt;color:#1b2333;margin-top:2mm;line-height:1.3}.views figcaption b{color:#14316b;font-family:M;display:block;font-size:9.5pt}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:7mm;align-content:start}
+h2{font-size:13pt;margin-bottom:2.5mm}
+table{width:100%;border-collapse:collapse;font-size:10pt}
+th,td{text-align:left;padding:1.3mm 0;border-bottom:1px solid #e3e7ec;vertical-align:top}
+th{font-weight:600;color:#14316b;width:46%;padding-right:3mm}
+ol{margin:0;padding-left:5mm;font-size:10pt}ol li{margin-bottom:1.1mm}
+.note{margin-top:4mm;background:#eef2f7;border-left:3px solid #2c66d0;padding:3mm 4mm;font-size:9.3pt}
+.ft{display:flex;justify-content:space-between;align-items:center;background:#2c66d0;color:#fff;border-radius:3mm;padding:4mm 6mm;font-size:10pt}
+.ft b{font:800 13pt M;display:block}
+"""
+spec = f"""
+<div class="hd"><div class="logo">{A['logo']}</div><div class="t"><b>The Plastercycle bin</b><span>Specification sheet · hook-lift plasterboard bin</span></div></div>
+<div class="hero">
+  <div class="dimh"><i></i><span>2400 overall height</span><i></i></div>
+  <figure><div class="dimw"><i></i><span>6300 overall length</span><i></i></div>
+    <img src="{A['bin_open']}" alt=""></figure>
+  <p class="cap" style="grid-column:1/-1;margin:0">Side elevation, both loading panels open. Two top-hinged panels per side, about 1000 mm high, opening from the top and meeting in the middle. Overall width 2450 mm.</p>
+</div>
+<div class="views">
+  <figure><div class="im"><img src="{A['bin_hook']}" alt=""></div><figcaption><b>Hook end</b>A-frame and hook for standard hook&#8209;lift trucks.</figcaption></figure>
+  <figure><div class="im"><img src="{A['bin_rear_open']}" alt=""></div><figcaption><b>Rear door</b>Full width, full height, solid. The load tips out here.</figcaption></figure>
+  <figure><div class="im"><img src="{A['bin_inside']}" alt=""></div><figcaption><b>Inside</b>Sheeted smooth on every surface, so board doesn’t catch when tipping.</figcaption></figure>
+</div>
+<div class="cols">
+  <div><h2>Key dimensions</h2><table>
+    <tr><th>Overall length</th><td>6300 mm</td></tr><tr><th>Overall width</th><td>2450 mm</td></tr>
+    <tr><th>Overall height</th><td>2400 mm</td></tr><tr><th>Side panel height (from ground)</th><td>1000 mm</td></tr>
+    <tr><th>Side panels</th><td>2 per side, top-hinged, open in the middle</td></tr>
+    <tr><th>Rear door</th><td>Fully enclosed, solid door</td></tr>
+    <tr><th>Roof</th><td>Fully enclosed, weatherproof</td></tr>
+    <tr><th>Capacity</th><td>About 37 m³</td></tr></table></div>
+  <div><h2>Construction</h2><ol>
+    <li>Hook-lift compatible to standard specification.</li>
+    <li>Fully enclosed and weatherproof, so the board stays dry.</li>
+    <li>Top-hinged side panels held open by gas struts.</li>
+    <li>All internal surfaces sheeted smooth — no ribs or beams for board to catch on.</li>
+    <li>Full-width, full-height rear door.</li>
+    <li>Heavy-duty steel, weather-resistant paint, Plastercycle blue.</li>
+    <li>For plasterboard collection at councils, transfer stations, builders and commercial sites.</li></ol>
+    <div class="note">Concept specification. Hook height and rail width are matched to the collection truck before fabrication.</div></div>
+</div>
+<div class="ft"><div><b>Want one on your site?</b>plastercycle.com/book</div><div style="text-align:right">{EMAIL}<br>0427 888 222</div></div>
+"""
+
 jobs = [
   ('plastercycle-bin-sign-a3.pdf', page(sign, sign_css, 'A3'), 'A3'),
   ('plastercycle-gate-guide-a4.pdf', page(gate, gate_css), 'A4'),
   ('plastercycle-site-flyer-a4.pdf', page(flyer, flyer_css), 'A4'),
   ('plastercycle-for-councils.pdf', page(council, council_css), 'A4'),
+  ('plastercycle-bin-spec-a4.pdf', page(spec, spec_css), 'A4'),
 ]
+import sys
+if len(sys.argv) > 1: jobs = [j for j in jobs if any(a in j[0] for a in sys.argv[1:])]  # e.g. python3 print/build.py bin-spec
 with sync_playwright() as p:
     b = p.chromium.launch(); pg = b.new_page()
     for name, html, fmt in jobs:
