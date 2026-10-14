@@ -11,7 +11,7 @@ const { id = 'bin3d', autoOpen = true, compact = false } = Astro.props;
   data-length={BIN.length / 1000} data-width={BIN.width / 1000} data-height={BIN.height / 1000} data-sill={BIN.sill / 1000} data-auto-open={autoOpen ? '1' : '0'}>
   <div class="bin3d__stage">
     <img class="bin3d__fallback" src={href('/images/bin-side-open.webp')} width="1004" height="378" alt="Side view of the bin with both top-hinged loading panels lifted" fetchpriority="high" decoding="async" />
-    <p class="bin3d__hint" aria-hidden="true">Drag to turn it · pinch or scroll to zoom</p>
+    <p class="bin3d__hint" aria-hidden="true"><span class="bin3d__hint--fine">Drag to turn it · Ctrl + scroll to zoom</span><span class="bin3d__hint--touch">Drag to turn it · pinch to zoom</span></p>
   </div>
   <figcaption class="bin3d__ui">
     <div class="bin3d__group" role="group" aria-label="Views">
@@ -56,7 +56,7 @@ const { id = 'bin3d', autoOpen = true, compact = false } = Astro.props;
       stage.addEventListener('bin3d:state', sync);
       setTimeout(sync, 600);
       let hinted = false; const hideHint = () => { if (!hinted) { hinted = true; fig.classList.add('bin3d--touched'); } };
-      stage.addEventListener('pointerdown', hideHint, { once: true }); stage.addEventListener('wheel', hideHint, { once: true, passive: true });
+      stage.addEventListener('pointerdown', hideHint, { once: true }); stage.addEventListener('wheel', (e) => { if (e.ctrlKey || e.metaKey) hideHint(); }, { passive: true });
     };
     const io = new IntersectionObserver((entries) => { if (entries.some((e) => e.isIntersecting)) { io.disconnect(); boot(); } }, { rootMargin: '300px' });
     io.observe(fig);
@@ -74,7 +74,7 @@ const { id = 'bin3d', autoOpen = true, compact = false } = Astro.props;
 <style>
   .bin3d { margin: 0; }
   .bin3d__stage {
-    position: relative; aspect-ratio: 16 / 8.5; border-radius: var(--radius-m); overflow: hidden;
+    position: relative; aspect-ratio: 16 / 7; max-height: min(62vh, 560px); width: 100%; border-radius: var(--radius-m); overflow: hidden;
     background: radial-gradient(120% 90% at 50% 100%, #e6eaef 0%, var(--chalk) 60%);
   }
   .bin3d--compact .bin3d__stage { aspect-ratio: 16 / 9; }
@@ -94,6 +94,8 @@ const { id = 'bin3d', autoOpen = true, compact = false } = Astro.props;
     opacity: 0; transition: opacity 0.4s;
   }
   .bin3d--live .bin3d__hint { opacity: 1; }
+  .bin3d__hint--touch { display: none; }
+  @media (pointer: coarse) { .bin3d__hint--fine { display: none; } .bin3d__hint--touch { display: inline; } }
   .bin3d--touched .bin3d__hint, .bin3d--static .bin3d__hint { opacity: 0; }
   .bin3d__ui { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.75rem 1.5rem; margin-top: 1rem; }
   .bin3d--static .bin3d__ui { display: none; }
@@ -107,7 +109,7 @@ const { id = 'bin3d', autoOpen = true, compact = false } = Astro.props;
   .bin3d__group button[aria-pressed='true'] { background: var(--navy); border-color: var(--navy); color: #fff; }
   .bin3d__group--toggles button[aria-pressed='true'] { background: var(--steel); border-color: var(--steel); }
   @media (max-width: 600px) {
-    .bin3d__stage { aspect-ratio: 4 / 3.2; }
+    .bin3d__stage { aspect-ratio: 4 / 2.9; }
     .bin3d__hint { font-size: 0.74rem; }
     .bin3d__ui { gap: 0.6rem; }
     .bin3d__group { width: 100%; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.3rem; }

@@ -269,6 +269,8 @@ export async function mountBin(el: HTMLElement, opts: BinOptions): Promise<BinAp
   controls.maxPolarAngle = Math.PI / 2 - 0.03; controls.minPolarAngle = 0.25;
   // let one finger scroll the page; drag sideways to rotate, pinch to zoom
   renderer.domElement.style.touchAction = 'pan-y';
+  // a plain mouse wheel scrolls the page past the bin; only Ctrl/⌘ + wheel (and trackpad pinch, which arrives as ctrl+wheel) zooms
+  el.addEventListener('wheel', (e) => { if (!e.ctrlKey && !e.metaKey) e.stopPropagation(); }, { capture: true, passive: true });
   controls.update();
 
   // ---------- animation state ----------
